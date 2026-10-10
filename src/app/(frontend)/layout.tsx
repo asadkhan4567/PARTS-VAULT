@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from 'next'
+import { draftMode } from 'next/headers'
+import Link from 'next/link'
 import React from 'react'
+
+import { LivePreviewListener } from '@/components/admin/LivePreviewListener'
 
 import { CartDrawer } from '@/components/cart/CartDrawer'
 import { Footer } from '@/components/layout/Footer'
@@ -46,10 +50,11 @@ export const viewport: Viewport = {
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [settings, tree, vehicle] = await Promise.all([
+  const [settings, tree, vehicle, draft] = await Promise.all([
     getSettings(),
     getVehicleTree(),
     getVehicle(),
+    draftMode(),
   ])
   return (
     <html lang="en" className={fontVariables} suppressHydrationWarning>
@@ -58,6 +63,17 @@ export default async function FrontendLayout({ children }: { children: React.Rea
       </head>
       <body>
         <Preloader />
+        {draft.isEnabled ? (
+          <>
+            <LivePreviewListener />
+            <div className="fixed left-1/2 top-2 z-[95] -translate-x-1/2 rounded-full bg-warning px-4 py-1 text-xs font-bold text-navy-950 shadow">
+              Preview mode — showing drafts ·{' '}
+              <Link href="/preview/exit" prefetch={false} className="underline">
+                exit
+              </Link>
+            </div>
+          </>
+        ) : null}
         <VehicleProvider initial={vehicle} tree={tree}>
           <CartProvider>
             <MotionProvider>

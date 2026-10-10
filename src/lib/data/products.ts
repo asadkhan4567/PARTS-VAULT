@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { headers } from 'next/headers'
 import type { Where } from 'payload'
 import { cache } from 'react'
 
@@ -128,11 +129,13 @@ export async function listProducts(filters: ProductFilters): Promise<ProductList
 export const getProductBySlug = cache(async (slug: string, draft = false): Promise<Product | null> => {
   const payload = await getPayloadClient()
   const customer = await getCustomer()
+  // Draft previews read as the logged-in staff member (draft mode is only enabled for staff).
+  const staff = draft ? (await payload.auth({ headers: await headers() })).user : null
   const { docs } = await payload.find({
     collection: 'products',
     where: { slug: { equals: slug } },
     overrideAccess: false,
-    user: customer ?? undefined,
+    user: (staff?.collection === 'users' ? staff : customer) ?? undefined,
     draft,
     depth: 2,
     limit: 1,

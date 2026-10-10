@@ -6,7 +6,7 @@ Next.js 15, Payload CMS 3 (admin panel + backend) and PostgreSQL.
 The owner runs the whole store from the admin panel at `/admin`: products, prices, stock,
 categories, banners, phone/WhatsApp numbers, pages and orders. No code changes needed.
 
-> Build status: **Phases 0–4** (setup, admin, storefront, checkout & orders, motion & 3D) are complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
+> Build status: **Phases 0–5** (setup, admin, storefront, checkout & orders, motion & 3D, admin power tools) are complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
 > for the full plan and the phases still to come.
 
 ## Run it locally
@@ -65,6 +65,22 @@ Without a seed, the first visit to `/admin` asks you to create the first user �
   The customer's tracking timeline updates automatically.
 - **Hide a section of the homepage:** Content → Homepage → untick *Show this section*, or drag
   sections to reorder → Publish.
+
+### Power tools (left menu → Tools)
+
+- **Dashboard:** today's orders and revenue, 7/30-day totals, orders waiting to ship, low stock,
+  new part requests (one-tap WhatsApp), top sellers, and big shortcuts.
+- **Bulk price update:** filter by category / brand / car make / name → increase or decrease by
+  % or Rs (or set a price), round to Rs 5/10/50 → **Preview** → **Apply**. Optional: keep the
+  current price as the "old price" so the site shows a sale.
+- **Excel import / export:** download all products as CSV, edit in Excel, upload. "Check file"
+  shows errors per row before anything is saved; rows are matched by SKU and empty cells are left
+  unchanged.
+- **Duplicate a product:** open it → ⋮ menu → Duplicate (gets a new SKU, saved as a draft).
+- **Live preview:** while editing a product, page, blog post or the homepage, click *Live
+  Preview* to see the real page update (phone / tablet / desktop sizes). Drafts stay private.
+- **Orders:** the right sidebar has *WhatsApp status to customer*, *Invoice (PDF)* (with your
+  logo and NTN from Site Settings) and *Packing slip (PDF)*.
 
 ### Orders, payments and emails
 

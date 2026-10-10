@@ -23,6 +23,7 @@ export const Products: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
+      hooks: { beforeDuplicate: [({ value }) => `${value} (copy)`] },
       admin: {
         description:
           'Format: Part – Make Model [YY–YY] – OEM No. – Brand. e.g. "Front Brake Pads – Toyota Corolla [14–22] – 04465-02220 – Hitachi"',
@@ -84,7 +85,16 @@ export const Products: CollectionConfig = {
             {
               type: 'row',
               fields: [
-                { name: 'sku', label: 'SKU', type: 'text', required: true, unique: true, index: true },
+                {
+                  name: 'sku',
+                  label: 'SKU',
+                  type: 'text',
+                  required: true,
+                  unique: true,
+                  index: true,
+                  // "Duplicate" gets a fresh, unique SKU to edit.
+                  hooks: { beforeDuplicate: [({ value }) => `${value}-COPY-${Date.now().toString(36).slice(-4).toUpperCase()}`] },
+                },
                 { name: 'oemNumber', label: 'OEM / part number', type: 'text', index: true },
               ],
             },

@@ -457,7 +457,7 @@ export async function seed(payload: Payload, { reset = false } = {}) {
   // ——— Demo customers & orders ———
   const customer = await payload.create({
     collection: 'customers',
-    data: { name: 'Ali Raza', phone: '0321-5551234', email: 'ali.demo@partsyaar.com', password: 'demo-password', type: 'retail', points: 240, addresses: [{ label: 'Home', city: 'Lahore', area: 'DHA', address: 'House 12, Street 4, Phase 5, DHA, Lahore' }] },
+    data: { name: 'Ali Raza', phone: '0321-5551234', email: 'ali.demo@partsyaar.com', password: 'demo-password', type: 'retail', points: 240, addresses: [{ label: 'Home', city: 'Lahore', area: 'DHA', address: 'House 12, Street 4, Phase 5' }] },
     overrideAccess: true,
   })
   await payload.create({
@@ -467,12 +467,12 @@ export async function seed(payload: Payload, { reset = false } = {}) {
   })
   const line = (part: string, oem: string, quantity: number) => {
     const p = PRODUCTS.find((x) => x.part === part && x.oem === oem)!
-    return { product: pid(part, oem), title: `${p.part} – ${p.vehicleLabel} – ${p.oem} – ${p.brand}`, sku: undefined, unitPrice: p.price, quantity }
+    return { product: pid(part, oem), title: `${p.part} – ${p.vehicleLabel} – ${p.oem} – ${p.brand}`, sku: `PY-${slugify(p.oem).toUpperCase().slice(0, 18)}-${slugify(p.brand).slice(0, 3).toUpperCase()}`, unitPrice: p.price, quantity }
   }
   const demoOrders = [
-    { status: 'delivered', paymentStatus: 'paid', items: [line('Front Brake Pads', '04465-02220', 1), line('Oil Filter', '90915-YZZE1', 2)], customer: customer.id, customerName: 'Ali Raza', phone: '0321-5551234', city: 'Lahore', area: 'DHA', address: 'House 12, Street 4, Phase 5, DHA, Lahore', deliveryFee: 200 },
-    { status: 'out_for_delivery', paymentStatus: 'unpaid', items: [line('Front Brake Pads', '45022-TBA-A01', 1)], customerName: 'Sana Iqbal', phone: '0300-7654321', city: 'Lahore', area: 'Gulberg', address: '45-B Main Boulevard, Gulberg III, Lahore', deliveryFee: 200, riderName: 'Imran', riderPhone: '0301-1112223' },
-    { status: 'pending', paymentStatus: 'awaiting', paymentMethod: 'bank_transfer', items: [line('Front Brake Discs (Pair)', '8W0615301', 1), line('Front Brake Pads', '8W0698151', 1)], customerName: 'Faisal Hameed', phone: '0345-9876543', city: 'Islamabad', area: 'F-7', address: 'House 3, Street 22, F-7/2, Islamabad', deliveryFee: 0 },
+    { status: 'delivered', paymentStatus: 'paid', items: [line('Front Brake Pads', '04465-02220', 1), line('Oil Filter', '90915-YZZE1', 2)], customer: customer.id, customerName: 'Ali Raza', phone: '0321-5551234', city: 'Lahore', area: 'DHA', address: 'House 12, Street 4, Phase 5', deliveryFee: 200 },
+    { status: 'out_for_delivery', paymentStatus: 'unpaid', items: [line('Front Brake Pads', '45022-TBA-A01', 1)], customerName: 'Sana Iqbal', phone: '0300-7654321', city: 'Lahore', area: 'Gulberg', address: '45-B Main Boulevard, Gulberg III', deliveryFee: 200, riderName: 'Imran', riderPhone: '0301-1112223' },
+    { status: 'pending', paymentStatus: 'awaiting', paymentMethod: 'bank_transfer', items: [line('Front Brake Discs (Pair)', '8W0615301', 1), line('Front Brake Pads', '8W0698151', 1)], customerName: 'Faisal Hameed', phone: '0345-9876543', city: 'Islamabad', area: 'F-7', address: 'House 3, Street 22, F-7/2', deliveryFee: 0 },
   ]
   for (const o of demoOrders) {
     await payload.create({ collection: 'orders', data: { paymentMethod: 'cod', ...o } as never, overrideAccess: true, context: ctx })

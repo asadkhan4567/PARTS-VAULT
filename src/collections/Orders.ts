@@ -88,6 +88,11 @@ export const Orders: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
     {
+      name: 'actions',
+      type: 'ui',
+      admin: { position: 'sidebar', components: { Field: '@/components/admin/OrderActions' } },
+    },
+    {
       // Secret for the guest confirmation link (/order/PY-…?t=…). Staff-only.
       name: 'accessToken',
       type: 'text',

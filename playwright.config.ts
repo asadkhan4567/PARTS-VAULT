@@ -11,6 +11,8 @@ import 'dotenv/config'
  */
 export default defineConfig({
   testDir: './tests/e2e',
+  // The dev server compiles each route on first visit; give cold pages room.
+  timeout: 60_000,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */

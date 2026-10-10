@@ -1,3 +1,4 @@
+import { default as default_bd9a3eb0969675b027902d6a22a18ee7 } from '@/components/admin/OrderActions'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -28,12 +29,16 @@ import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c08
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { default as default_d500ae2ad98a0a33d640ae0ac1a3417c } from '@/components/admin/AdminIcon'
 import { default as default_b80a86fce1072afc84cd6a430a965697 } from '@/components/admin/AdminLogo'
-import { default as default_3a9cca97fda07c2c15aaac4087f744f7 } from '@/components/admin/Welcome'
+import { default as default_efcc7fec2af44371f7fed5d0104659dd } from '@/components/admin/NavLinks'
+import { default as default_0e7b23c75ea046975e1784ba01f82886 } from '@/components/admin/Dashboard'
+import { default as default_05e4c0782068fdb662e63f1c506501ff } from '@/components/admin/BulkPriceView'
+import { default as default_37eddd2177c9c7f2f74742a2380176c9 } from '@/components/admin/ImportExportView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "@/components/admin/OrderActions#default": default_bd9a3eb0969675b027902d6a22a18ee7,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -64,7 +69,10 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@/components/admin/AdminIcon#default": default_d500ae2ad98a0a33d640ae0ac1a3417c,
   "@/components/admin/AdminLogo#default": default_b80a86fce1072afc84cd6a430a965697,
-  "@/components/admin/Welcome#default": default_3a9cca97fda07c2c15aaac4087f744f7,
+  "@/components/admin/NavLinks#default": default_efcc7fec2af44371f7fed5d0104659dd,
+  "@/components/admin/Dashboard#default": default_0e7b23c75ea046975e1784ba01f82886,
+  "@/components/admin/BulkPriceView#default": default_05e4c0782068fdb662e63f1c506501ff,
+  "@/components/admin/ImportExportView#default": default_37eddd2177c9c7f2f74742a2380176c9,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

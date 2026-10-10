@@ -14,6 +14,8 @@ export function slugField(from = 'title', overrides: Partial<Field> = {}): Field
       description: 'Web address. Leave empty to create it from the name automatically.',
     },
     hooks: {
+      // A duplicate gets a new slug from its "(copy)" title.
+      beforeDuplicate: [() => undefined],
       beforeValidate: [
         ({ value, data, originalDoc }) => {
           if (typeof value === 'string' && value.trim()) return slugify(value)

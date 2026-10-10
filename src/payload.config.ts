@@ -26,6 +26,7 @@ import { Reviews } from './collections/Reviews'
 import { StockAlerts } from './collections/StockAlerts'
 import { Subscribers } from './collections/Subscribers'
 import { Users } from './collections/Users'
+import { toolEndpoints } from './endpoints/tools'
 import { AnnouncementBar } from './globals/AnnouncementBar'
 import { DeliverySettings } from './globals/DeliverySettings'
 import { Homepage } from './globals/Homepage'
@@ -60,7 +61,34 @@ export default buildConfig({
         Logo: '@/components/admin/AdminLogo',
         Icon: '@/components/admin/AdminIcon',
       },
-      beforeDashboard: ['@/components/admin/Welcome'],
+      beforeDashboard: ['@/components/admin/Dashboard'],
+      afterNavLinks: ['@/components/admin/NavLinks'],
+      views: {
+        bulkPrices: { Component: '@/components/admin/BulkPriceView', path: '/bulk-prices' },
+        importExport: { Component: '@/components/admin/ImportExportView', path: '/import-export' },
+      },
+    },
+    // Live preview: the owner sees the real page update as they edit a product, page or the homepage.
+    livePreview: {
+      url: ({ data, collectionConfig, globalConfig }) => {
+        const base = process.env.NEXT_PUBLIC_SERVER_URL || ''
+        const path =
+          globalConfig?.slug === 'homepage'
+            ? '/'
+            : collectionConfig?.slug === 'products'
+              ? `/product/${data?.slug ?? ''}`
+              : collectionConfig?.slug === 'blog-posts'
+                ? `/blog/${data?.slug ?? ''}`
+                : `/${data?.slug ?? ''}`
+        return `${base}/preview?path=${encodeURIComponent(path)}`
+      },
+      collections: ['products', 'pages', 'blog-posts'],
+      globals: ['homepage'],
+      breakpoints: [
+        { label: 'Phone', name: 'phone', width: 390, height: 844 },
+        { label: 'Tablet', name: 'tablet', width: 820, height: 1180 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
+      ],
     },
   },
   collections: [
@@ -83,6 +111,7 @@ export default buildConfig({
     Users,
     AuditLogs,
   ],
+  endpoints: toolEndpoints,
   globals: [
     SiteSettings,
     DeliverySettings,
