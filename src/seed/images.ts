@@ -55,8 +55,8 @@ export function productImage(opts: { icon?: string; title: string; brand: string
     <rect width="1200" height="1200" fill="url(#g)"/>
     <ellipse cx="600" cy="800" rx="300" ry="34" fill="#0A1A33" opacity="0.12"/>
     <g transform="translate(600 500) rotate(${tilt}) scale(1.25)">${glyphFor(opts.icon)}</g>
-    <rect x="70" y="70" width="${Math.max(140, opts.brand.length * 26 + 60)}" height="64" rx="32" fill="${NAVY}"/>
-    <text x="100" y="113" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700" font-size="30" fill="#fff">${esc(opts.brand)}</text>
+    <rect x="${1130 - Math.max(140, opts.brand.length * 26 + 60)}" y="70" width="${Math.max(140, opts.brand.length * 26 + 60)}" height="64" rx="32" fill="${NAVY}"/>
+    <text x="${1130 - Math.max(140, opts.brand.length * 26 + 60) / 2}" y="113" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700" font-size="30" fill="#fff">${esc(opts.brand)}</text>
     <text x="600" y="960" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-weight="700" font-size="52" fill="${NAVY}">${esc(opts.title)}</text>
     <text x="600" y="1030" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="36" fill="${STEEL}">${esc(opts.oem)}</text>
   </svg>`

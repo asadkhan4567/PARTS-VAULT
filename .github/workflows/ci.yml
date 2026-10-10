@@ -35,4 +35,8 @@ jobs:
       - run: pnpm test:int
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm seed
+        env:
+          SEED_OWNER_EMAIL: owner@partsyaar.test
+          SEED_OWNER_PASSWORD: ci-owner-password
       - run: pnpm test:e2e

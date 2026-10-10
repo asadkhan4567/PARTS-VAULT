@@ -37,6 +37,7 @@ const ICONS = [
 
 export const HeroBlock: Block = {
   slug: 'hero',
+  interfaceName: 'HeroBlock',
   labels: { singular: 'Hero + vehicle finder', plural: 'Hero sections' },
   fields: [
     enabled,
@@ -55,6 +56,7 @@ export const HeroBlock: Block = {
 
 export const StatsBlock: Block = {
   slug: 'stats',
+  interfaceName: 'StatsBlock',
   labels: { singular: 'Stats counters', plural: 'Stats counters' },
   fields: [
     enabled,
@@ -79,6 +81,7 @@ export const StatsBlock: Block = {
 
 export const TrustStripBlock: Block = {
   slug: 'trustStrip',
+  interfaceName: 'TrustStripBlock',
   labels: { singular: 'Trust strip', plural: 'Trust strips' },
   fields: [
     enabled,
@@ -102,6 +105,7 @@ export const TrustStripBlock: Block = {
 
 export const ShopByMakeBlock: Block = {
   slug: 'shopByMake',
+  interfaceName: 'ShopByMakeBlock',
   labels: { singular: 'Shop by make', plural: 'Shop by make' },
   fields: [
     enabled,
@@ -122,6 +126,7 @@ export const ShopByMakeBlock: Block = {
 
 export const PromoBannersBlock: Block = {
   slug: 'promoBanners',
+  interfaceName: 'PromoBannersBlock',
   labels: { singular: 'Promo banners (2-up)', plural: 'Promo banners' },
   fields: [
     enabled,
@@ -137,6 +142,7 @@ export const PromoBannersBlock: Block = {
 
 export const PopularCategoriesBlock: Block = {
   slug: 'popularCategories',
+  interfaceName: 'PopularCategoriesBlock',
   labels: { singular: 'Popular categories', plural: 'Popular categories' },
   fields: [
     enabled,
@@ -154,6 +160,7 @@ export const PopularCategoriesBlock: Block = {
 
 export const FeatureBannersBlock: Block = {
   slug: 'featureBanners',
+  interfaceName: 'FeatureBannersBlock',
   labels: { singular: 'Feature banners', plural: 'Feature banners' },
   fields: [
     enabled,
@@ -169,6 +176,7 @@ export const FeatureBannersBlock: Block = {
 
 export const DealOfTheDayBlock: Block = {
   slug: 'dealOfTheDay',
+  interfaceName: 'DealOfTheDayBlock',
   labels: { singular: 'Deal of the day', plural: 'Deals of the day' },
   fields: [
     enabled,
@@ -185,6 +193,7 @@ export const DealOfTheDayBlock: Block = {
 
 export const ProductTabsBlock: Block = {
   slug: 'productTabs',
+  interfaceName: 'ProductTabsBlock',
   labels: { singular: 'Product carousel (tabs)', plural: 'Product carousels' },
   fields: [
     enabled,
@@ -225,12 +234,14 @@ export const ProductTabsBlock: Block = {
 
 export const BrandMarqueeBlock: Block = {
   slug: 'brandMarquee',
+  interfaceName: 'BrandMarqueeBlock',
   labels: { singular: 'Brands marquee', plural: 'Brands marquee' },
   fields: [enabled, heading('Brands We Trust')],
 }
 
 export const DeliveryStripBlock: Block = {
   slug: 'deliveryStrip',
+  interfaceName: 'DeliveryStripBlock',
   labels: { singular: 'Same-day delivery strip', plural: 'Same-day delivery strips' },
   fields: [
     enabled,
@@ -241,6 +252,7 @@ export const DeliveryStripBlock: Block = {
 
 export const PartRequestBlock: Block = {
   slug: 'partRequest',
+  interfaceName: 'PartRequestBlock',
   labels: { singular: '"Can\'t find your part?"', plural: 'Part request sections' },
   fields: [
     enabled,
@@ -253,18 +265,21 @@ export const PartRequestBlock: Block = {
 
 export const ReviewsBlock: Block = {
   slug: 'reviews',
+  interfaceName: 'ReviewsBlock',
   labels: { singular: 'Reviews carousel', plural: 'Reviews carousels' },
   fields: [enabled, heading('What Our Customers Say'), { name: 'limit', type: 'number', defaultValue: 8 }],
 }
 
 export const BlogTeaserBlock: Block = {
   slug: 'blogTeaser',
+  interfaceName: 'BlogTeaserBlock',
   labels: { singular: 'Latest blog posts', plural: 'Blog teasers' },
   fields: [enabled, heading('Maintenance Tips'), { name: 'limit', type: 'number', defaultValue: 3, min: 1, max: 6 }],
 }
 
 export const NewsletterBlock: Block = {
   slug: 'newsletter',
+  interfaceName: 'NewsletterBlock',
   labels: { singular: 'Newsletter signup', plural: 'Newsletter signups' },
   fields: [
     enabled,
@@ -278,12 +293,14 @@ export const NewsletterBlock: Block = {
 
 export const RichTextBlock: Block = {
   slug: 'richText',
+  interfaceName: 'RichTextBlock',
   labels: { singular: 'Text', plural: 'Text' },
   fields: [enabled, { name: 'content', type: 'richText', required: true }],
 }
 
 export const ImageBlock: Block = {
   slug: 'image',
+  interfaceName: 'ImageBlock',
   labels: { singular: 'Image', plural: 'Images' },
   fields: [
     enabled,
@@ -304,6 +321,7 @@ export const ImageBlock: Block = {
 
 export const FaqBlock: Block = {
   slug: 'faq',
+  interfaceName: 'FaqBlock',
   labels: { singular: 'FAQ accordion', plural: 'FAQ accordions' },
   fields: [
     enabled,
@@ -321,6 +339,7 @@ export const FaqBlock: Block = {
 
 export const BannerBlock: Block = {
   slug: 'banner',
+  interfaceName: 'BannerBlock',
   labels: { singular: 'Banner', plural: 'Banners' },
   fields: [
     enabled,
@@ -343,6 +362,7 @@ export const BannerBlock: Block = {
 
 export const ProductGridBlock: Block = {
   slug: 'productGrid',
+  interfaceName: 'ProductGridBlock',
   labels: { singular: 'Product grid', plural: 'Product grids' },
   fields: [
     enabled,
@@ -366,6 +386,7 @@ export const ProductGridBlock: Block = {
 
 export const VideoBlock: Block = {
   slug: 'video',
+  interfaceName: 'VideoBlock',
   labels: { singular: 'Video', plural: 'Videos' },
   fields: [
     enabled,
@@ -377,6 +398,7 @@ export const VideoBlock: Block = {
 
 export const CtaBlock: Block = {
   slug: 'cta',
+  interfaceName: 'CtaBlock',
   labels: { singular: 'Call to action', plural: 'Calls to action' },
   fields: [
     enabled,
@@ -390,6 +412,7 @@ export const CtaBlock: Block = {
 
 export const ContactBlock: Block = {
   slug: 'contact',
+  interfaceName: 'ContactBlock',
   labels: { singular: 'Contact details + map', plural: 'Contact sections' },
   fields: [enabled, heading('Get in touch'), { name: 'showForm', type: 'checkbox', defaultValue: true }],
 }

@@ -709,173 +709,17 @@ export interface Page {
   intro?: string | null;
   layout?:
     | (
-        | {
-            enabled?: boolean | null;
-            content: {
-              root: {
-                type: string;
-                children: {
-                  type: any;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            };
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'richText';
-          }
-        | {
-            enabled?: boolean | null;
-            image: number | Media;
-            caption?: string | null;
-            width?: ('content' | 'wide' | 'full') | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'image';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            items?:
-              | {
-                  question: string;
-                  answer: string;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'faq';
-          }
-        | {
-            enabled?: boolean | null;
-            /**
-             * Pick a saved banner, or fill in below
-             */
-            banner?: (number | null) | Banner;
-            headline?: string | null;
-            text?: string | null;
-            cta?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            style?: ('navy' | 'red' | 'light') | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'banner';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            source?: ('manual' | 'category' | 'bestSellers' | 'onSale') | null;
-            products?: (number | Product)[] | null;
-            category?: (number | null) | Category;
-            limit?: number | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'productGrid';
-          }
-        | {
-            enabled?: boolean | null;
-            url?: string | null;
-            file?: (number | null) | Media;
-            caption?: string | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'video';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            text?: string | null;
-            primary?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            secondary?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            whatsapp?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'cta';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            showForm?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'contact';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            text?: string | null;
-            buttonLabel?: string | null;
-            showForm?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'partRequest';
-          }
-        | {
-            enabled?: boolean | null;
-            items?:
-              | {
-                  icon?:
-                    | (
-                        | 'truck'
-                        | 'shield-check'
-                        | 'badge-percent'
-                        | 'gift'
-                        | 'wrench'
-                        | 'clock'
-                        | 'phone'
-                        | 'star'
-                        | 'package'
-                        | 'map-pin'
-                      )
-                    | null;
-                  title: string;
-                  text?: string | null;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'trustStrip';
-          }
-        | {
-            enabled?: boolean | null;
-            items?:
-              | {
-                  value: number;
-                  prefix?: string | null;
-                  suffix?: string | null;
-                  label: string;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'stats';
-          }
+        | RichTextBlock
+        | ImageBlock
+        | FaqBlock
+        | BannerBlock
+        | ProductGridBlock
+        | VideoBlock
+        | CtaBlock
+        | ContactBlock
+        | PartRequestBlock
+        | TrustStripBlock
+        | StatsBlock
       )[]
     | null;
   /**
@@ -893,6 +737,217 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock".
+ */
+export interface RichTextBlock {
+  enabled?: boolean | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'richText';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock".
+ */
+export interface ImageBlock {
+  enabled?: boolean | null;
+  image: number | Media;
+  caption?: string | null;
+  width?: ('content' | 'wide' | 'full') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'image';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock".
+ */
+export interface FaqBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  items?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  enabled?: boolean | null;
+  /**
+   * Pick a saved banner, or fill in below
+   */
+  banner?: (number | null) | Banner;
+  headline?: string | null;
+  text?: string | null;
+  cta?: {
+    label?: string | null;
+    /**
+     * e.g. /category/brake-pads or https://wa.me/923001234567
+     */
+    url?: string | null;
+  };
+  style?: ('navy' | 'red' | 'light') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductGridBlock".
+ */
+export interface ProductGridBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  source?: ('manual' | 'category' | 'bestSellers' | 'onSale') | null;
+  products?: (number | Product)[] | null;
+  category?: (number | null) | Category;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  enabled?: boolean | null;
+  url?: string | null;
+  file?: (number | null) | Media;
+  caption?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'video';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock".
+ */
+export interface CtaBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  text?: string | null;
+  primary?: {
+    label?: string | null;
+    /**
+     * e.g. /category/brake-pads or https://wa.me/923001234567
+     */
+    url?: string | null;
+  };
+  secondary?: {
+    label?: string | null;
+    /**
+     * e.g. /category/brake-pads or https://wa.me/923001234567
+     */
+    url?: string | null;
+  };
+  whatsapp?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactBlock".
+ */
+export interface ContactBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  showForm?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contact';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartRequestBlock".
+ */
+export interface PartRequestBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  text?: string | null;
+  buttonLabel?: string | null;
+  showForm?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'partRequest';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TrustStripBlock".
+ */
+export interface TrustStripBlock {
+  enabled?: boolean | null;
+  items?:
+    | {
+        icon?:
+          | (
+              | 'truck'
+              | 'shield-check'
+              | 'badge-percent'
+              | 'gift'
+              | 'wrench'
+              | 'clock'
+              | 'phone'
+              | 'star'
+              | 'package'
+              | 'map-pin'
+            )
+          | null;
+        title: string;
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'trustStrip';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  enabled?: boolean | null;
+  items?:
+    | {
+        value: number;
+        prefix?: string | null;
+        suffix?: string | null;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1574,151 +1629,17 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
-        richText?:
-          | T
-          | {
-              enabled?: T;
-              content?: T;
-              id?: T;
-              blockName?: T;
-            };
-        image?:
-          | T
-          | {
-              enabled?: T;
-              image?: T;
-              caption?: T;
-              width?: T;
-              id?: T;
-              blockName?: T;
-            };
-        faq?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              items?:
-                | T
-                | {
-                    question?: T;
-                    answer?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        banner?:
-          | T
-          | {
-              enabled?: T;
-              banner?: T;
-              headline?: T;
-              text?: T;
-              cta?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              style?: T;
-              id?: T;
-              blockName?: T;
-            };
-        productGrid?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              source?: T;
-              products?: T;
-              category?: T;
-              limit?: T;
-              id?: T;
-              blockName?: T;
-            };
-        video?:
-          | T
-          | {
-              enabled?: T;
-              url?: T;
-              file?: T;
-              caption?: T;
-              id?: T;
-              blockName?: T;
-            };
-        cta?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              text?: T;
-              primary?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              secondary?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              whatsapp?: T;
-              id?: T;
-              blockName?: T;
-            };
-        contact?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              showForm?: T;
-              id?: T;
-              blockName?: T;
-            };
-        partRequest?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              text?: T;
-              buttonLabel?: T;
-              showForm?: T;
-              id?: T;
-              blockName?: T;
-            };
-        trustStrip?:
-          | T
-          | {
-              enabled?: T;
-              items?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    text?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        stats?:
-          | T
-          | {
-              enabled?: T;
-              items?:
-                | T
-                | {
-                    value?: T;
-                    prefix?: T;
-                    suffix?: T;
-                    label?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
+        richText?: T | RichTextBlockSelect<T>;
+        image?: T | ImageBlockSelect<T>;
+        faq?: T | FaqBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        productGrid?: T | ProductGridBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
+        cta?: T | CtaBlockSelect<T>;
+        contact?: T | ContactBlockSelect<T>;
+        partRequest?: T | PartRequestBlockSelect<T>;
+        trustStrip?: T | TrustStripBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
       };
   slug?: T;
   meta?:
@@ -1731,6 +1652,173 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RichTextBlock_select".
+ */
+export interface RichTextBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageBlock_select".
+ */
+export interface ImageBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  image?: T;
+  caption?: T;
+  width?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock_select".
+ */
+export interface FaqBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  items?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock_select".
+ */
+export interface BannerBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  banner?: T;
+  headline?: T;
+  text?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  style?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductGridBlock_select".
+ */
+export interface ProductGridBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  source?: T;
+  products?: T;
+  category?: T;
+  limit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock_select".
+ */
+export interface VideoBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  url?: T;
+  file?: T;
+  caption?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock_select".
+ */
+export interface CtaBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  text?: T;
+  primary?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  secondary?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  whatsapp?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactBlock_select".
+ */
+export interface ContactBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  showForm?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartRequestBlock_select".
+ */
+export interface PartRequestBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  text?: T;
+  buttonLabel?: T;
+  showForm?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TrustStripBlock_select".
+ */
+export interface TrustStripBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  items?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock_select".
+ */
+export interface StatsBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  items?:
+    | T
+    | {
+        value?: T;
+        prefix?: T;
+        suffix?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2128,273 +2216,223 @@ export interface Homepage {
   id: number;
   sections?:
     | (
-        | {
-            enabled?: boolean | null;
-            eyebrow?: string | null;
-            headline: string;
-            /**
-             * Words in the headline to colour red
-             */
-            highlight?: string | null;
-            subheadline?: string | null;
-            primaryCta?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            secondaryCta?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            backgroundImage?: (number | null) | Media;
-            backgroundVideo?: (number | null) | Media;
-            show3D?: boolean | null;
-            showFinder?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'hero';
-          }
-        | {
-            enabled?: boolean | null;
-            items?:
-              | {
-                  icon?:
-                    | (
-                        | 'truck'
-                        | 'shield-check'
-                        | 'badge-percent'
-                        | 'gift'
-                        | 'wrench'
-                        | 'clock'
-                        | 'phone'
-                        | 'star'
-                        | 'package'
-                        | 'map-pin'
-                      )
-                    | null;
-                  title: string;
-                  text?: string | null;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'trustStrip';
-          }
-        | {
-            enabled?: boolean | null;
-            items?:
-              | {
-                  value: number;
-                  prefix?: string | null;
-                  suffix?: string | null;
-                  label: string;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'stats';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            subheading?: string | null;
-            /**
-             * Empty = all visible makes
-             */
-            makes?: (number | Make)[] | null;
-            layout?: ('horizontal' | 'grid') | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'shopByMake';
-          }
-        | {
-            enabled?: boolean | null;
-            /**
-             * Empty = all active banners placed "Homepage — promo"
-             */
-            banners?: (number | Banner)[] | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'promoBanners';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            subheading?: string | null;
-            /**
-             * Empty = categories ticked "Show in Popular Categories"
-             */
-            categories?: (number | Category)[] | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'popularCategories';
-          }
-        | {
-            enabled?: boolean | null;
-            /**
-             * Empty = all active banners placed "Homepage — feature"
-             */
-            banners?: (number | Banner)[] | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'featureBanners';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            product: number | Product;
-            /**
-             * Empty = countdown to midnight
-             */
-            endsAt?: string | null;
-            note?: string | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'dealOfTheDay';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            tabs?:
-              | {
-                  label: string;
-                  source: 'bestSellers' | 'newArrivals' | 'featured' | 'onSale' | 'category' | 'manual';
-                  limit?: number | null;
-                  category?: (number | null) | Category;
-                  products?: (number | Product)[] | null;
-                  id?: string | null;
-                }[]
-              | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'productTabs';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            text?: string | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'deliveryStrip';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'brandMarquee';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            text?: string | null;
-            buttonLabel?: string | null;
-            showForm?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'partRequest';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            limit?: number | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'reviews';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            limit?: number | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'blogTeaser';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            text?: string | null;
-            couponCode?: string | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'newsletter';
-          }
-        | {
-            enabled?: boolean | null;
-            /**
-             * Pick a saved banner, or fill in below
-             */
-            banner?: (number | null) | Banner;
-            headline?: string | null;
-            text?: string | null;
-            cta?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            style?: ('navy' | 'red' | 'light') | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'banner';
-          }
-        | {
-            enabled?: boolean | null;
-            content: {
-              root: {
-                type: string;
-                children: {
-                  type: any;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            };
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'richText';
-          }
-        | {
-            enabled?: boolean | null;
-            heading?: string | null;
-            text?: string | null;
-            primary?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            secondary?: {
-              label?: string | null;
-              /**
-               * e.g. /category/brake-pads or https://wa.me/923001234567
-               */
-              url?: string | null;
-            };
-            whatsapp?: boolean | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'cta';
-          }
+        | HeroBlock
+        | TrustStripBlock
+        | StatsBlock
+        | ShopByMakeBlock
+        | PromoBannersBlock
+        | PopularCategoriesBlock
+        | FeatureBannersBlock
+        | DealOfTheDayBlock
+        | ProductTabsBlock
+        | DeliveryStripBlock
+        | BrandMarqueeBlock
+        | PartRequestBlock
+        | ReviewsBlock
+        | BlogTeaserBlock
+        | NewsletterBlock
+        | BannerBlock
+        | RichTextBlock
+        | CtaBlock
       )[]
     | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  enabled?: boolean | null;
+  eyebrow?: string | null;
+  headline: string;
+  /**
+   * Words in the headline to colour red
+   */
+  highlight?: string | null;
+  subheadline?: string | null;
+  primaryCta?: {
+    label?: string | null;
+    /**
+     * e.g. /category/brake-pads or https://wa.me/923001234567
+     */
+    url?: string | null;
+  };
+  secondaryCta?: {
+    label?: string | null;
+    /**
+     * e.g. /category/brake-pads or https://wa.me/923001234567
+     */
+    url?: string | null;
+  };
+  backgroundImage?: (number | null) | Media;
+  backgroundVideo?: (number | null) | Media;
+  show3D?: boolean | null;
+  showFinder?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ShopByMakeBlock".
+ */
+export interface ShopByMakeBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  subheading?: string | null;
+  /**
+   * Empty = all visible makes
+   */
+  makes?: (number | Make)[] | null;
+  layout?: ('horizontal' | 'grid') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'shopByMake';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PromoBannersBlock".
+ */
+export interface PromoBannersBlock {
+  enabled?: boolean | null;
+  /**
+   * Empty = all active banners placed "Homepage — promo"
+   */
+  banners?: (number | Banner)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'promoBanners';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PopularCategoriesBlock".
+ */
+export interface PopularCategoriesBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  subheading?: string | null;
+  /**
+   * Empty = categories ticked "Show in Popular Categories"
+   */
+  categories?: (number | Category)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'popularCategories';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeatureBannersBlock".
+ */
+export interface FeatureBannersBlock {
+  enabled?: boolean | null;
+  /**
+   * Empty = all active banners placed "Homepage — feature"
+   */
+  banners?: (number | Banner)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'featureBanners';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DealOfTheDayBlock".
+ */
+export interface DealOfTheDayBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  product: number | Product;
+  /**
+   * Empty = countdown to midnight
+   */
+  endsAt?: string | null;
+  note?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'dealOfTheDay';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductTabsBlock".
+ */
+export interface ProductTabsBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  tabs?:
+    | {
+        label: string;
+        source: 'bestSellers' | 'newArrivals' | 'featured' | 'onSale' | 'category' | 'manual';
+        limit?: number | null;
+        category?: (number | null) | Category;
+        products?: (number | Product)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'productTabs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DeliveryStripBlock".
+ */
+export interface DeliveryStripBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  text?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'deliveryStrip';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BrandMarqueeBlock".
+ */
+export interface BrandMarqueeBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'brandMarquee';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReviewsBlock".
+ */
+export interface ReviewsBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'reviews';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlogTeaserBlock".
+ */
+export interface BlogTeaserBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  limit?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'blogTeaser';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterBlock".
+ */
+export interface NewsletterBlock {
+  enabled?: boolean | null;
+  heading?: string | null;
+  text?: string | null;
+  couponCode?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsletter';
 }
 /**
  * The thin red strip at the very top of every page.
@@ -2642,238 +2680,191 @@ export interface HomepageSelect<T extends boolean = true> {
   sections?:
     | T
     | {
-        hero?:
-          | T
-          | {
-              enabled?: T;
-              eyebrow?: T;
-              headline?: T;
-              highlight?: T;
-              subheadline?: T;
-              primaryCta?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              secondaryCta?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              backgroundImage?: T;
-              backgroundVideo?: T;
-              show3D?: T;
-              showFinder?: T;
-              id?: T;
-              blockName?: T;
-            };
-        trustStrip?:
-          | T
-          | {
-              enabled?: T;
-              items?:
-                | T
-                | {
-                    icon?: T;
-                    title?: T;
-                    text?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        stats?:
-          | T
-          | {
-              enabled?: T;
-              items?:
-                | T
-                | {
-                    value?: T;
-                    prefix?: T;
-                    suffix?: T;
-                    label?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        shopByMake?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              subheading?: T;
-              makes?: T;
-              layout?: T;
-              id?: T;
-              blockName?: T;
-            };
-        promoBanners?:
-          | T
-          | {
-              enabled?: T;
-              banners?: T;
-              id?: T;
-              blockName?: T;
-            };
-        popularCategories?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              subheading?: T;
-              categories?: T;
-              id?: T;
-              blockName?: T;
-            };
-        featureBanners?:
-          | T
-          | {
-              enabled?: T;
-              banners?: T;
-              id?: T;
-              blockName?: T;
-            };
-        dealOfTheDay?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              product?: T;
-              endsAt?: T;
-              note?: T;
-              id?: T;
-              blockName?: T;
-            };
-        productTabs?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              tabs?:
-                | T
-                | {
-                    label?: T;
-                    source?: T;
-                    limit?: T;
-                    category?: T;
-                    products?: T;
-                    id?: T;
-                  };
-              id?: T;
-              blockName?: T;
-            };
-        deliveryStrip?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              text?: T;
-              id?: T;
-              blockName?: T;
-            };
-        brandMarquee?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              id?: T;
-              blockName?: T;
-            };
-        partRequest?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              text?: T;
-              buttonLabel?: T;
-              showForm?: T;
-              id?: T;
-              blockName?: T;
-            };
-        reviews?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              limit?: T;
-              id?: T;
-              blockName?: T;
-            };
-        blogTeaser?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              limit?: T;
-              id?: T;
-              blockName?: T;
-            };
-        newsletter?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              text?: T;
-              couponCode?: T;
-              id?: T;
-              blockName?: T;
-            };
-        banner?:
-          | T
-          | {
-              enabled?: T;
-              banner?: T;
-              headline?: T;
-              text?: T;
-              cta?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              style?: T;
-              id?: T;
-              blockName?: T;
-            };
-        richText?:
-          | T
-          | {
-              enabled?: T;
-              content?: T;
-              id?: T;
-              blockName?: T;
-            };
-        cta?:
-          | T
-          | {
-              enabled?: T;
-              heading?: T;
-              text?: T;
-              primary?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              secondary?:
-                | T
-                | {
-                    label?: T;
-                    url?: T;
-                  };
-              whatsapp?: T;
-              id?: T;
-              blockName?: T;
-            };
+        hero?: T | HeroBlockSelect<T>;
+        trustStrip?: T | TrustStripBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
+        shopByMake?: T | ShopByMakeBlockSelect<T>;
+        promoBanners?: T | PromoBannersBlockSelect<T>;
+        popularCategories?: T | PopularCategoriesBlockSelect<T>;
+        featureBanners?: T | FeatureBannersBlockSelect<T>;
+        dealOfTheDay?: T | DealOfTheDayBlockSelect<T>;
+        productTabs?: T | ProductTabsBlockSelect<T>;
+        deliveryStrip?: T | DeliveryStripBlockSelect<T>;
+        brandMarquee?: T | BrandMarqueeBlockSelect<T>;
+        partRequest?: T | PartRequestBlockSelect<T>;
+        reviews?: T | ReviewsBlockSelect<T>;
+        blogTeaser?: T | BlogTeaserBlockSelect<T>;
+        newsletter?: T | NewsletterBlockSelect<T>;
+        banner?: T | BannerBlockSelect<T>;
+        richText?: T | RichTextBlockSelect<T>;
+        cta?: T | CtaBlockSelect<T>;
       };
   _status?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock_select".
+ */
+export interface HeroBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  eyebrow?: T;
+  headline?: T;
+  highlight?: T;
+  subheadline?: T;
+  primaryCta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  secondaryCta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  backgroundImage?: T;
+  backgroundVideo?: T;
+  show3D?: T;
+  showFinder?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ShopByMakeBlock_select".
+ */
+export interface ShopByMakeBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  subheading?: T;
+  makes?: T;
+  layout?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PromoBannersBlock_select".
+ */
+export interface PromoBannersBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  banners?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PopularCategoriesBlock_select".
+ */
+export interface PopularCategoriesBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  subheading?: T;
+  categories?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeatureBannersBlock_select".
+ */
+export interface FeatureBannersBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  banners?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DealOfTheDayBlock_select".
+ */
+export interface DealOfTheDayBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  product?: T;
+  endsAt?: T;
+  note?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductTabsBlock_select".
+ */
+export interface ProductTabsBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  tabs?:
+    | T
+    | {
+        label?: T;
+        source?: T;
+        limit?: T;
+        category?: T;
+        products?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DeliveryStripBlock_select".
+ */
+export interface DeliveryStripBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  text?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BrandMarqueeBlock_select".
+ */
+export interface BrandMarqueeBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReviewsBlock_select".
+ */
+export interface ReviewsBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  limit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BlogTeaserBlock_select".
+ */
+export interface BlogTeaserBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  limit?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterBlock_select".
+ */
+export interface NewsletterBlockSelect<T extends boolean = true> {
+  enabled?: T;
+  heading?: T;
+  text?: T;
+  couponCode?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

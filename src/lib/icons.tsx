@@ -1,0 +1,50 @@
+import {
+  BadgePercent,
+  BatteryCharging,
+  CarFront,
+  Clock,
+  Cog,
+  Disc3,
+  Droplet,
+  Filter,
+  Gift,
+  Lightbulb,
+  MapPin,
+  Package,
+  Phone,
+  Settings2,
+  ShieldCheck,
+  Snowflake,
+  Sparkles,
+  Star,
+  Truck,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react'
+
+const ICONS: Record<string, LucideIcon> = {
+  engine: Cog,
+  'car-front': CarFront,
+  lightbulb: Lightbulb,
+  disc: Disc3,
+  wrench: Wrench,
+  filter: Filter,
+  droplet: Droplet,
+  snowflake: Snowflake,
+  battery: BatteryCharging,
+  sparkles: Sparkles,
+  cog: Settings2,
+  truck: Truck,
+  'shield-check': ShieldCheck,
+  'badge-percent': BadgePercent,
+  gift: Gift,
+  clock: Clock,
+  phone: Phone,
+  star: Star,
+  package: Package,
+  'map-pin': MapPin,
+}
+
+export function iconFor(name: string | null | undefined): LucideIcon {
+  return ICONS[name ?? ''] ?? Wrench
+}

@@ -3,6 +3,7 @@ import type { CollectionConfig, Where } from 'payload'
 import { fieldManagers, fieldStaffOrWorkshop, managers, publishedOrStaff, staff } from '@/access'
 import { slugField } from '@/fields/slug'
 import { auditFields } from '@/hooks/audit'
+import { compactPartNumber } from '@/lib/search'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -254,6 +255,10 @@ export const Products: CollectionConfig = {
             ? await req.payload.findByID({ collection: 'models', id: ids(f.model), depth: 0, req }).catch(() => null)
             : null
           words.push(m?.label, f?.engine)
+        }
+        // Part numbers also indexed without dashes/spaces so "0446502220" finds "04465-02220".
+        for (const n of [doc.sku, doc.oemNumber, ...(doc.crossRefs ?? []).map((r: { number?: string }) => r?.number)]) {
+          if (n) words.push(compactPartNumber(n))
         }
         return { ...data, searchText: words.filter(Boolean).join(' ').toLowerCase() }
       },

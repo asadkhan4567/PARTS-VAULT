@@ -132,3 +132,127 @@
     scroll-behavior: auto !important;
   }
 }
+
+@keyframes py-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes py-slide-left {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes py-slide-right {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes py-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes py-pop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.97);
+  }
+}
+@keyframes py-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes py-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes py-bounce {
+  30% {
+    transform: scale(1.35);
+  }
+  60% {
+    transform: scale(0.9);
+  }
+}
+
+@utility skeleton {
+  background: linear-gradient(90deg, var(--color-navy-100) 25%, #f4f7fb 50%, var(--color-navy-100) 75%);
+  background-size: 200% 100%;
+  animation: py-shimmer 1.4s linear infinite;
+}
+
+@utility container-py {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1280px;
+  padding-inline: 1rem;
+  @media (width >= 48rem) {
+    padding-inline: 1.5rem;
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Rich text from the CMS */
+.prose-py {
+  color: #2a3a52;
+  line-height: 1.75;
+  & > * + * {
+    margin-top: 1em;
+  }
+  & h2 {
+    margin-top: 1.6em;
+    font-size: 1.6rem;
+    color: var(--color-navy-950);
+  }
+  & h3 {
+    margin-top: 1.4em;
+    font-size: 1.3rem;
+    color: var(--color-navy-950);
+  }
+  & ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+  & ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+  }
+  & li + li {
+    margin-top: 0.35em;
+  }
+  & a {
+    color: var(--color-navy-500);
+    text-decoration: underline;
+  }
+  & strong {
+    color: var(--color-navy-950);
+  }
+}
+@keyframes py-streak {
+  0%,
+  100% {
+    transform: translateX(-20%) rotate(-6deg);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(20%) rotate(-6deg);
+    opacity: 1;
+  }
+}
+@keyframes py-ride {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
