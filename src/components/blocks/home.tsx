@@ -10,6 +10,7 @@ import { AddToCartButton } from '@/components/product/AddToCartButton'
 import { FitBadge, Stars, StockBadge } from '@/components/product/badges'
 import { ProductCard, toCartItem } from '@/components/product/ProductCard'
 import { Button } from '@/components/ui/button'
+import { T } from '@/components/providers/LangProvider'
 import { HeroVisual } from '@/components/three/HeroVisual'
 import { VehicleFinder } from '@/components/vehicle/VehicleFinder'
 import { getCategoryTree, getMakes, getPartBrands } from '@/lib/data/catalog'
@@ -61,8 +62,12 @@ export function Hero({ block, ctx }: { block: HeroBlock; ctx: BlockContext }) {
   const show3D = block.show3D !== false
   const finder = block.showFinder ? (
     <div className="glass rounded-2xl p-4 shadow-2xl sm:p-6" id="finder">
-      <p className="mb-1 font-heading text-2xl font-bold">Find parts for your car</p>
-      <p className="mb-4 text-sm text-steel-400">Select once — we’ll only show parts that fit.</p>
+      <p className="mb-1 font-heading text-2xl font-bold">
+        <T k="find_parts" />
+      </p>
+      <p className="mb-4 text-sm text-steel-400">
+        <T k="find_parts_hint" />
+      </p>
       <VehicleFinder navigate tone="dark" wide={show3D} />
     </div>
   ) : null

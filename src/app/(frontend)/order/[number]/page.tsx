@@ -15,10 +15,10 @@ import { whatsappLink } from '@/lib/whatsapp'
 
 export const metadata: Metadata = { title: 'Order confirmed', robots: { index: false } }
 
-type Props = { params: Promise<{ number: string }>; searchParams: Promise<{ t?: string }> }
+type Props = { params: Promise<{ number: string }>; searchParams: Promise<{ t?: string; payment?: string }> }
 
 export default async function OrderPage({ params, searchParams }: Props) {
-  const [{ number }, { t }] = await Promise.all([params, searchParams])
+  const [{ number }, { t, payment }] = await Promise.all([params, searchParams])
   const payload = await getPayloadClient()
   const { docs } = await payload.find({ collection: 'orders', where: { orderNumber: { equals: number.toUpperCase() } }, limit: 1, overrideAccess: true, depth: 0 })
   const order = docs[0]
@@ -54,7 +54,21 @@ export default async function OrderPage({ params, searchParams }: Props) {
           </div>
         </div>
 
-        {instructions && order.paymentMethod !== 'cod' ? (
+        {payment === 'failed' && order.paymentStatus !== 'paid' ? (
+          <div className="rounded-brand border-2 border-red-600 bg-red-600/5 p-5" role="alert">
+            <p className="font-heading text-xl font-bold">Payment didn’t go through</p>
+            <p className="text-sm">Your order is saved. Try again, or pay by Cash on Delivery — message us on WhatsApp and we’ll switch it.</p>
+            {t ? (
+              <Link href={`/pay/${order.orderNumber}?t=${t}`} className="mt-2 inline-block font-semibold text-navy-500 hover:underline">
+                Try payment again →
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
+        {order.paymentStatus === 'paid' && order.paymentMethod !== 'cod' ? (
+          <p className="rounded-brand bg-success/10 p-4 font-semibold text-[#0f7a37]">✓ Payment received — thank you!</p>
+        ) : null}
+        {instructions && order.paymentMethod === 'bank_transfer' ? (
           <div className="rounded-brand border-2 border-warning bg-warning/10 p-5">
             <p className="mb-2 font-heading text-xl font-bold">Complete your payment</p>
             <p className="whitespace-pre-line text-sm">{instructions}</p>

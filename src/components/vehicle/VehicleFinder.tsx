@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 
+import { useLang } from '@/components/providers/LangProvider'
 import { useVehicle } from '@/components/providers/VehicleProvider'
 import { cn } from '@/lib/utils'
 import { generationsForYear, yearsForModel, type Vehicle, type VehicleTree } from '@/lib/vehicle'
@@ -13,7 +14,7 @@ type Make = VehicleTree[number]
 type Model = Make['models'][number]
 type Gen = Model['generations'][number]
 
-const STEPS = ['Make', 'Model', 'Year', 'Variant'] as const
+const STEPS = ['make', 'model', 'year', 'variant'] as const
 
 type Props = {
   /** After choosing, go to the vehicle's parts page (hero) or stay on the page (header). */
@@ -26,6 +27,7 @@ type Props = {
 
 export function VehicleFinder({ navigate = false, tone = 'light', className, wide = false }: Props) {
   const { tree, select } = useVehicle()
+  const { t } = useLang()
   const router = useRouter()
   const [make, setMake] = useState<Make | null>(null)
   const [model, setModel] = useState<Model | null>(null)
@@ -87,7 +89,7 @@ export function VehicleFinder({ navigate = false, tone = 'light', className, wid
               <span className={cn('grid size-5 place-items-center rounded-full text-[10px]', i < step ? 'bg-red-600 text-white' : i === step ? 'border-2 border-red-600' : 'border border-steel-400')}>
                 {i < step ? <Check className="size-3" /> : i + 1}
               </span>
-              <span className="hidden sm:inline">{s}</span>
+              <span className="hidden sm:inline">{t(s)}</span>
               {i < STEPS.length - 1 ? <span className="mx-1 hidden h-px w-4 bg-steel-400/50 sm:block" /> : null}
             </li>
           ))}

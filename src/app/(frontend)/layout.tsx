@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from 'next'
-import { draftMode } from 'next/headers'
+import { cookies, draftMode } from 'next/headers'
 import Link from 'next/link'
 import React from 'react'
 
+import { WishlistSync } from '@/components/account/WishlistSync'
 import { LivePreviewListener } from '@/components/admin/LivePreviewListener'
+import { OfferPopup } from '@/components/layout/OfferPopup'
 
 import { CartDrawer } from '@/components/cart/CartDrawer'
 import { Footer } from '@/components/layout/Footer'
@@ -18,7 +20,9 @@ import { getVehicleTree } from '@/lib/data/catalog'
 import { getSettings } from '@/lib/data/settings'
 import { fontVariables } from '@/lib/fonts'
 import { mediaUrl } from '@/lib/media'
-import { getVehicle } from '@/lib/session'
+import { LangProvider } from '@/components/providers/LangProvider'
+import { LANG_COOKIE, parseLang } from '@/lib/i18n'
+import { getCustomer, getVehicle } from '@/lib/session'
 
 import './globals.css'
 
@@ -56,8 +60,11 @@ export default async function FrontendLayout({ children }: { children: React.Rea
     getVehicle(),
     draftMode(),
   ])
+  const customer = await getCustomer()
+  const lang = parseLang((await cookies()).get(LANG_COOKIE)?.value)
+  const popup = settings.popup
   return (
-    <html lang="en" className={fontVariables} suppressHydrationWarning>
+    <html lang={lang} dir={lang === 'ur' ? 'rtl' : 'ltr'} className={fontVariables} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: preloaderScript }} />
       </head>
@@ -74,7 +81,8 @@ export default async function FrontendLayout({ children }: { children: React.Rea
             </div>
           </>
         ) : null}
-        <VehicleProvider initial={vehicle} tree={tree}>
+        <LangProvider lang={lang}>
+        <VehicleProvider initial={vehicle} tree={tree} loggedIn={Boolean(customer)}>
           <CartProvider>
             <MotionProvider>
               <Header settings={settings} />
@@ -82,10 +90,24 @@ export default async function FrontendLayout({ children }: { children: React.Rea
               <Footer settings={settings} />
               <CartDrawer delivery={settings.delivery} />
               <WhatsAppFloat number={settings.site.whatsapp} />
+            {customer ? <WishlistSync /> : null}
+            {popup.enabled ? (
+              <OfferPopup
+                title={popup.title}
+                text={popup.text}
+                image={mediaUrl(popup.image, 'card')}
+                delaySeconds={popup.delaySeconds}
+                couponCode={popup.couponCode}
+                collectEmail={popup.collectEmail}
+                ctaText={popup.ctaText}
+                ctaLink={popup.ctaLink}
+              />
+            ) : null}
               <MobileTabBar />
             </MotionProvider>
           </CartProvider>
         </VehicleProvider>
+        </LangProvider>
       </body>
     </html>
   )

@@ -36,7 +36,8 @@ export function CheckoutForm({ zones, methods, whatsapp, defaults, loggedIn }: P
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [message, setMessage] = useState<string | null>(null)
   const [pending, start] = useTransition()
-  const { quote, loading } = useQuote({ city, paymentMethod: method, phone })
+  const [usePoints, setUsePoints] = useState(false)
+  const { quote, loading } = useQuote({ city, paymentMethod: method, phone, usePoints })
   const areas = zones.find((z) => z.city === city)?.areas ?? []
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export function CheckoutForm({ zones, methods, whatsapp, defaults, loggedIn }: P
     form.set('items', JSON.stringify(items.map((i) => ({ productId: i.productId, quantity: i.quantity }))))
     form.set('couponCode', coupon ?? '')
     form.set('paymentMethod', method)
+    form.set('usePoints', usePoints ? '1' : '')
     setMessage(null)
     start(async () => {
       const res = await placeOrder(form)
@@ -217,6 +219,15 @@ export function CheckoutForm({ zones, methods, whatsapp, defaults, loggedIn }: P
           ))}
         </ul>
         <CouponField />
+        {quote && quote.pointsAvailable > 0 ? (
+          <label className="flex items-start gap-2 rounded-lg bg-navy-100/60 p-3 text-sm">
+            <input type="checkbox" checked={usePoints} onChange={(e) => setUsePoints(e.target.checked)} disabled={quote.pointsAvailable < quote.pointsMin} className="mt-0.5 size-4 accent-red-600" data-testid="use-points" />
+            <span>
+              Use my Yaar Points <strong>({quote.pointsAvailable} available)</strong>
+              {quote.pointsAvailable < quote.pointsMin ? <span className="block text-xs text-muted-foreground">You can redeem from {quote.pointsMin} points.</span> : null}
+            </span>
+          </label>
+        ) : null}
         <Totals quote={quote} loading={loading} />
         <button disabled={pending || !quote?.lines.length} className="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-red-600 text-lg font-semibold text-white hover:bg-red-700 disabled:opacity-60" data-testid="place-order">
           {pending ? <Loader2 className="size-5 animate-spin" /> : <Lock className="size-5" />}

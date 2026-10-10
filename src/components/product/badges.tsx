@@ -1,5 +1,6 @@
 import { CheckCircle2, CircleAlert, XCircle } from 'lucide-react'
 
+import { T } from '@/components/providers/LangProvider'
 import { Badge } from '@/components/ui/badge'
 import type { StockState } from '@/lib/product'
 import { cn } from '@/lib/utils'
@@ -8,24 +9,32 @@ export function FitBadge({ fits, className, vehicleName }: { fits: boolean | nul
   if (fits === null) return null
   return fits ? (
     <span className={cn('inline-flex items-center gap-1 text-xs font-bold text-[#0f7a37]', className)} data-testid="fit-yes">
-      <CheckCircle2 className="size-4" /> Fits {vehicleName ?? 'your vehicle'}
+      <CheckCircle2 className="size-4" /> <T k="fits" /> {vehicleName ?? ''}
     </span>
   ) : (
     <span className={cn('inline-flex items-center gap-1 text-xs font-semibold text-red-700', className)} data-testid="fit-no">
-      <XCircle className="size-4" /> Doesn’t fit {vehicleName ?? 'your vehicle'}
+      <XCircle className="size-4" /> <T k="doesnt_fit" /> {vehicleName ?? ''}
     </span>
   )
 }
 
 export function StockBadge({ state, stock }: { state: StockState; stock?: number }) {
-  if (state === 'out') return <Badge variant="outline" className="text-muted-foreground">Out of stock</Badge>
+  if (state === 'out') return (
+      <Badge variant="outline" className="text-muted-foreground">
+        <T k="out_of_stock" />
+      </Badge>
+    )
   if (state === 'low')
     return (
       <Badge variant="warning">
         <CircleAlert className="size-3" /> Only {stock} left
       </Badge>
     )
-  return <Badge variant="success">In stock</Badge>
+  return (
+    <Badge variant="success">
+      <T k="in_stock" />
+    </Badge>
+  )
 }
 
 export function Stars({ value, count, className, showCount = true }: { value: number; count?: number; className?: string; showCount?: boolean }) {

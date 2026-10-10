@@ -17,6 +17,7 @@ export function Logo({ className, tone = 'dark' }: LogoProps) {
       viewBox="0 0 230 48"
       role="img"
       aria-label="Partsyaar.com"
+      direction="ltr"
       className={cn('h-10 w-auto', className)}
     >
       <title>Partsyaar.com</title>

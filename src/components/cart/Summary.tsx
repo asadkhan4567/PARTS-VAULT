@@ -73,6 +73,7 @@ export function Totals({ quote, loading, className }: { quote: Quote | null; loa
       {quote.couponDiscount ? row(`Coupon (${quote.couponCode})`, <span className="text-[#0f7a37]">−{formatPrice(quote.couponDiscount)}</span>) : null}
       {row('Delivery', quote.deliveryFee ? formatPrice(quote.deliveryFee) : <span className="font-semibold text-[#0f7a37]">Free</span>)}
       {quote.codFee ? row('Cash on Delivery fee', formatPrice(quote.codFee)) : null}
+      {quote.pointsRedeemed ? row(`Yaar Points (${quote.pointsUsed})`, <span className="text-[#0f7a37]">−{formatPrice(quote.pointsRedeemed)}</span>) : null}
       <div className="flex items-center justify-between border-t pt-3 text-lg font-bold">
         <span>Total</span>
         <span className="flex items-center gap-2 text-red-600" data-testid="order-total">

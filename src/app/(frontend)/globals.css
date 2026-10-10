@@ -17,8 +17,9 @@
   --color-success: #1db954;
   --color-warning: #f5a524;
 
-  --font-heading: var(--font-rajdhani), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Nastaliq is a fallback: Latin text keeps Rajdhani/Inter, Urdu characters use Nastaliq. */
+  --font-heading: var(--font-rajdhani), var(--font-nastaliq), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), var(--font-nastaliq), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-urdu: var(--font-nastaliq), serif;
 
@@ -102,10 +103,8 @@
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-navy-500;
   }
-  [dir='rtl'] body,
-  :lang(ur) {
-    @apply font-urdu;
-    line-height: 2;
+  [dir='rtl'] body {
+    line-height: 1.9;
   }
 }
 

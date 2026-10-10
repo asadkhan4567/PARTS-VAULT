@@ -4,6 +4,7 @@ import { Check, ShoppingCart } from 'lucide-react'
 import { useRef, useState } from 'react'
 
 import { useCart, type CartItem } from '@/components/providers/CartProvider'
+import { useLang } from '@/components/providers/LangProvider'
 import { flyToCart } from '@/lib/motion/fly-to-cart'
 import { cn } from '@/lib/utils'
 
@@ -17,8 +18,9 @@ type Props = {
   openDrawer?: boolean
 }
 
-export function AddToCartButton({ item, quantity = 1, disabled, className, size = 'sm', label = 'Add to cart', openDrawer = true }: Props) {
+export function AddToCartButton({ item, quantity = 1, disabled, className, size = 'sm', label, openDrawer = true }: Props) {
   const { add } = useCart()
+  const { t } = useLang()
   const [done, setDone] = useState(false)
   const ref = useRef<HTMLButtonElement>(null)
   return (
@@ -40,7 +42,7 @@ export function AddToCartButton({ item, quantity = 1, disabled, className, size 
       )}
     >
       {done ? <Check className="size-4" /> : <ShoppingCart className="size-4" />}
-      {disabled ? 'Out of stock' : done ? 'Added' : label}
+      {disabled ? t('out_of_stock') : done ? t('added') : (label ?? t('add_to_cart'))}
     </button>
   )
 }

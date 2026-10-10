@@ -1,6 +1,7 @@
 import { BadgeCheck, RotateCcw, ShieldCheck, Truck } from 'lucide-react'
 import type { Metadata } from 'next'
 import { draftMode } from 'next/headers'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -16,6 +17,7 @@ import { Gallery } from '@/components/product/Gallery'
 import { toCartItem } from '@/components/product/ProductCard'
 import { ProductTabs } from '@/components/product/ProductTabs'
 import { RecentlyViewed } from '@/components/product/RecentlyViewed'
+import { ReviewForm } from '@/components/product/ReviewForm'
 import { RichText } from '@/components/RichText'
 import { Badge } from '@/components/ui/badge'
 import { CheckFitmentButton } from '@/components/vehicle/CheckFitmentButton'
@@ -317,22 +319,38 @@ export default async function ProductPage({ params }: Props) {
             {
               id: 'reviews',
               label: `Reviews (${p.ratingCount ?? 0})`,
-              content: reviews.length ? (
-                <ul className="grid gap-4 md:grid-cols-2">
-                  {reviews.map((r) => (
-                    <li key={r.id} className="space-y-2 rounded-brand border bg-white p-4">
-                      <Stars value={r.rating} count={1} showCount={false} />
-                      <p className="font-heading text-lg font-bold">{r.title}</p>
-                      <p className="text-sm text-muted-foreground">{r.text}</p>
-                      <p className="text-xs">
-                        <strong>{r.name}</strong>
-                        {r.city ? ` · ${r.city}` : ''} {r.verifiedBuyer ? <span className="font-semibold text-[#0f7a37]">· ✓ Verified buyer</span> : null}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-muted-foreground">No reviews yet — be the first after your order arrives.</p>
+              content: (
+                <div className="space-y-6">
+                  {reviews.length ? (
+                    <ul className="grid gap-4 md:grid-cols-2">
+                      {reviews.map((r) => (
+                        <li key={r.id} className="space-y-2 rounded-brand border bg-white p-4">
+                          <Stars value={r.rating} count={1} showCount={false} />
+                          <p className="font-heading text-lg font-bold">{r.title}</p>
+                          <p className="text-sm text-muted-foreground">{r.text}</p>
+                          {r.photos?.length ? (
+                            <div className="flex gap-2">
+                              {r.photos.map((ph) =>
+                                mediaUrl(ph, 'thumb') ? (
+                                  <a key={typeof ph === 'object' ? ph.id : ph} href={mediaUrl(ph, 'large') ?? '#'} target="_blank" rel="noopener noreferrer" className="relative size-16 overflow-hidden rounded-md border">
+                                    <Image src={mediaUrl(ph, 'thumb')!} alt={mediaAlt(ph, 'Customer photo')} fill sizes="64px" className="object-cover" />
+                                  </a>
+                                ) : null,
+                              )}
+                            </div>
+                          ) : null}
+                          <p className="text-xs">
+                            <strong>{r.name}</strong>
+                            {r.city ? ` · ${r.city}` : ''} {r.verifiedBuyer ? <span className="font-semibold text-[#0f7a37]">· ✓ Verified buyer</span> : null}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No reviews yet — be the first.</p>
+                  )}
+                  <ReviewForm productId={p.id} defaultName={customer?.name} />
+                </div>
               ),
             },
           ]}

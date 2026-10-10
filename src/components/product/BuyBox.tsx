@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { QuantityStepper } from '@/components/cart/CartDrawer'
 import { WhatsAppIcon } from '@/components/layout/WhatsAppFloat'
 import { useCart, type CartItem } from '@/components/providers/CartProvider'
+import { useLang } from '@/components/providers/LangProvider'
 import { cn, formatPrice } from '@/lib/utils'
 import { pushRecentlyViewed, useWishlist } from '@/lib/wishlist'
 
@@ -23,6 +24,7 @@ type Props = {
 export function BuyBox({ item, inStock, whatsappHref, shareUrl }: Props) {
   const router = useRouter()
   const { add } = useCart()
+  const { t } = useLang()
   const wishlist = useWishlist()
   const [qty, setQty] = useState(1)
   const [shared, setShared] = useState(false)
@@ -64,18 +66,18 @@ export function BuyBox({ item, inStock, whatsappHref, shareUrl }: Props) {
       </div>
       {inStock ? (
         <button type="button" onClick={buyNow} data-testid="buy-now" className="flex h-13 w-full items-center justify-center gap-2 rounded-lg bg-navy-900 font-semibold text-white hover:bg-navy-700">
-          <Zap className="size-4 text-red-600" /> Buy now
+          <Zap className="size-4 text-red-600" /> {t('buy_now')}
         </button>
       ) : null}
       <a href={whatsappHref} target="_blank" rel="noopener noreferrer" data-testid="order-whatsapp" className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border-2 border-[#25D366] font-semibold text-navy-950 hover:bg-[#25D366]/10">
-        <WhatsAppIcon className="size-5 text-[#25D366]" /> Order on WhatsApp
+        <WhatsAppIcon className="size-5 text-[#25D366]" /> {t('order_whatsapp')}
       </a>
       <div className="flex gap-2">
         <button type="button" onClick={() => wishlist.toggle(item.productId)} aria-pressed={saved} className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border text-sm font-semibold hover:border-red-600">
-          <Heart className={cn('size-4', saved && 'fill-red-600 text-red-600')} /> {saved ? 'Saved' : 'Wishlist'}
+          <Heart className={cn('size-4', saved && 'fill-red-600 text-red-600')} /> {saved ? '♥' : t('wishlist')}
         </button>
         <button type="button" onClick={share} className="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border text-sm font-semibold hover:border-navy-500">
-          <Share2 className="size-4" /> {shared ? 'Link copied' : 'Share'}
+          <Share2 className="size-4" /> {shared ? '✓' : t('share')}
         </button>
       </div>
 

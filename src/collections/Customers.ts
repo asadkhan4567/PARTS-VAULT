@@ -88,6 +88,15 @@ export const Customers: CollectionConfig = {
       ],
     },
     { name: 'wishlist', type: 'relationship', relationTo: 'products', hasMany: true },
+    {
+      type: 'collapsible',
+      label: 'Workshop application',
+      admin: { initCollapsed: true },
+      fields: [
+        { name: 'workshopApplication', type: 'textarea', admin: { readOnly: true, description: 'Approve by setting Type to Workshop above.' } },
+        { name: 'workshopRequestedAt', type: 'date', admin: { readOnly: true } },
+      ],
+    },
     { name: 'notes', type: 'textarea', access: { read: ({ req }) => isStaffReq(req) } },
   ],
 }

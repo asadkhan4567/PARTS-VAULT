@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { useCart } from '@/components/providers/CartProvider'
+import { useLang } from '@/components/providers/LangProvider'
 import { Button } from '@/components/ui/button'
 import { Sheet } from '@/components/ui/sheet'
 import { freeDeliveryProgress, type DeliveryConfig } from '@/lib/delivery'
@@ -49,25 +50,26 @@ export function FreeDeliveryBar({ delivery, subtotal }: { delivery: DeliveryConf
 
 export function CartDrawer({ delivery }: { delivery: DeliveryConfig }) {
   const { items, open, setOpen, subtotal, setQuantity, remove, count } = useCart()
+  const { t } = useLang()
   return (
     <Sheet
       open={open}
       onOpenChange={setOpen}
-      title={`Your cart (${count})`}
+      title={`${t('your_cart')} (${count})`}
       footer={
         items.length ? (
           <div className="space-y-3">
             <div className="flex items-center justify-between text-base">
-              <span>Subtotal</span>
+              <span>{t('subtotal')}</span>
               <strong className="text-xl" data-testid="cart-subtotal">{formatPrice(subtotal)}</strong>
             </div>
             <p className="text-xs text-muted-foreground">Delivery and discounts are calculated at checkout.</p>
             <div className="grid grid-cols-2 gap-2">
               <Button variant="outline" asChild>
-                <Link href="/cart" onClick={() => setOpen(false)}>View cart</Link>
+                <Link href="/cart" onClick={() => setOpen(false)}>{t('view_cart')}</Link>
               </Button>
               <Button asChild>
-                <Link href="/checkout" onClick={() => setOpen(false)} data-testid="checkout-link">Checkout</Link>
+                <Link href="/checkout" onClick={() => setOpen(false)} data-testid="checkout-link">{t('checkout')}</Link>
               </Button>
             </div>
           </div>

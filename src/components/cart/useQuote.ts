@@ -8,12 +8,12 @@ import type { Quote } from '@/lib/checkout/types'
 import { useCart } from '../providers/CartProvider'
 
 /** Server-priced totals for the current cart, refreshed (debounced) when inputs change. */
-export function useQuote(opts: { city?: string | null; paymentMethod?: string | null; phone?: string | null }) {
+export function useQuote(opts: { city?: string | null; paymentMethod?: string | null; phone?: string | null; usePoints?: boolean }) {
   const { items, coupon, ready } = useCart()
   const [quote, setQuote] = useState<Quote | null>(null)
   const [loading, setLoading] = useState(false)
   const seq = useRef(0)
-  const key = JSON.stringify([items.map((i) => [i.productId, i.quantity]), coupon, opts.city, opts.paymentMethod, opts.phone])
+  const key = JSON.stringify([items.map((i) => [i.productId, i.quantity]), coupon, opts.city, opts.paymentMethod, opts.phone, opts.usePoints])
   useEffect(() => {
     if (!ready) return
     const n = ++seq.current
@@ -26,6 +26,7 @@ export function useQuote(opts: { city?: string | null; paymentMethod?: string | 
           couponCode: coupon,
           paymentMethod: opts.paymentMethod,
           phone: opts.phone,
+          usePoints: opts.usePoints,
         })
         if (n === seq.current) setQuote(q)
       } finally {

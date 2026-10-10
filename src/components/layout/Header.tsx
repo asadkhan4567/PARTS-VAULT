@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { Logo } from '@/components/brand/Logo'
+import { LangToggle, T } from '@/components/providers/LangProvider'
 import { VehicleSelector } from '@/components/vehicle/VehicleSelector'
 import { getCategoryTree, getMakes } from '@/lib/data/catalog'
 import type { Settings } from '@/lib/data/settings'
@@ -49,13 +50,13 @@ export async function Header({ settings }: { settings: Settings }) {
           <SearchBox className="hidden flex-1 md:block" />
           <VehicleSelector className="ml-auto max-w-[46vw] md:ml-0 md:max-w-56" compact />
           <a href={whatsappLink(site.whatsapp)} target="_blank" rel="noopener noreferrer" className={iconBtn}>
-            <WhatsAppIcon className="size-6 text-[#25D366]" /> WhatsApp
+            <WhatsAppIcon className="size-6 text-[#25D366]" /> <T k="whatsapp" />
           </a>
           <Link href="/account" className={iconBtn}>
-            <User className="size-6" /> Account
+            <User className="size-6" /> <T k="account" />
           </Link>
           <Link href="/account/wishlist" className={iconBtn}>
-            <Heart className="size-6" /> Wishlist
+            <Heart className="size-6" /> <T k="wishlist" />
           </Link>
           <CartButton className="hidden text-white md:inline-flex" />
         </div>
@@ -71,7 +72,8 @@ export async function Header({ settings }: { settings: Settings }) {
                 {l.label}
               </Link>
             ))}
-            <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`} className="ml-auto inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white">
+            <LangToggle className="ms-auto rounded-md px-3 py-1.5 text-sm font-semibold text-white/90 hover:bg-white/8" />
+            <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`} className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white">
               <Phone className="size-4 text-red-600" /> {site.phone}
             </a>
           </div>

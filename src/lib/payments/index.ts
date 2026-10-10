@@ -1,6 +1,9 @@
 import type { Order, PaymentSetting } from '@/payload-types'
 
 import type { PaymentOption } from '../checkout/types'
+import { card } from './card'
+import { easypaisa } from './easypaisa'
+import { jazzcash } from './jazzcash'
 
 /**
  * Payment gateway adapter. Offline methods (COD, bank transfer) return no redirect; online
@@ -37,6 +40,9 @@ const bankTransfer: PaymentAdapter = {
 const registry = new Map<string, PaymentAdapter>([
   [cod.id, cod],
   [bankTransfer.id, bankTransfer],
+  [jazzcash.id, jazzcash],
+  [easypaisa.id, easypaisa],
+  [card.id, card],
 ])
 
 export function registerPaymentAdapter(adapter: PaymentAdapter) {

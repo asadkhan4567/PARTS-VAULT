@@ -3,7 +3,20 @@
 import { useCallback, useEffect, useState } from 'react'
 
 const KEY = 'py_wishlist'
-const EVENT = 'py:wishlist'
+export const WISHLIST_EVENT = 'py:wishlist'
+const EVENT = WISHLIST_EVENT
+
+export function writeWishlist(ids: number[]) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(ids))
+  } catch {
+    // ignore
+  }
+  window.dispatchEvent(new Event(EVENT))
+}
+export function readWishlist(): number[] {
+  return read()
+}
 
 function read(): number[] {
   try {

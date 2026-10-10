@@ -243,6 +243,7 @@ export interface Order {
   couponCode?: string | null;
   discount?: number | null;
   pointsRedeemed?: number | null;
+  pointsUsed?: number | null;
   total?: number | null;
   pointsEarned?: number | null;
   paymentMethod: 'cod' | 'bank_transfer' | 'jazzcash' | 'easypaisa' | 'card';
@@ -299,6 +300,11 @@ export interface Customer {
       }[]
     | null;
   wishlist?: (number | Product)[] | null;
+  /**
+   * Approve by setting Type to Workshop above.
+   */
+  workshopApplication?: string | null;
+  workshopRequestedAt?: string | null;
   notes?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -684,6 +690,8 @@ export interface Subscriber {
   createdAt: string;
 }
 /**
+ * Email requests are notified automatically. Phone numbers: WhatsApp them yourself, then tick Notified.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "stock-alerts".
  */
@@ -1336,6 +1344,7 @@ export interface OrdersSelect<T extends boolean = true> {
   couponCode?: T;
   discount?: T;
   pointsRedeemed?: T;
+  pointsUsed?: T;
   total?: T;
   pointsEarned?: T;
   paymentMethod?: T;
@@ -1381,6 +1390,8 @@ export interface CustomersSelect<T extends boolean = true> {
         id?: T;
       };
   wishlist?: T;
+  workshopApplication?: T;
+  workshopRequestedAt?: T;
   notes?: T;
   updatedAt?: T;
   createdAt?: T;

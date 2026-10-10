@@ -16,6 +16,8 @@ type PriceInput = {
   paymentMethod?: string | null
   phone?: string | null
   customer?: Customer | null
+  /** Shopper ticked "use my Yaar Points" (logged-in customers only). */
+  usePoints?: boolean
 }
 
 /** Coupon rules: active, dates, minimum, usage limit, first order only. */
@@ -145,7 +147,23 @@ export async function priceCart(payload: Payload, input: PriceInput): Promise<Qu
   }
 
   const codFee = input.paymentMethod === 'cod' && lines.length ? (delivery.codFee ?? 0) : 0
-  const total = Math.max(0, afterBundle - couponDiscount + fee + codFee)
+  const beforePoints = Math.max(0, afterBundle - couponDiscount + fee + codFee)
+
+  // Yaar Points: worth `pointValue` Rs each, capped at maxRedeemPercent of the order.
+  let pointsRedeemed = 0
+  let pointsUsed = 0
+  let pointsAvailable = 0
+  const loyalty = await payload.findGlobal({ slug: 'loyalty-settings', overrideAccess: true })
+  if (input.customer && loyalty.enabled && lines.length) {
+    pointsAvailable = input.customer.points ?? 0
+    const value = loyalty.pointValue ?? 1
+    if (input.usePoints && pointsAvailable >= (loyalty.minRedeem ?? 0) && value > 0) {
+      const cap = Math.floor((beforePoints * (loyalty.maxRedeemPercent ?? 20)) / 100)
+      pointsUsed = Math.min(pointsAvailable, Math.floor(cap / value))
+      pointsRedeemed = Math.round(pointsUsed * value)
+    }
+  }
+  const total = Math.max(0, beforePoints - pointsRedeemed)
   return {
     lines,
     subtotal,
@@ -156,7 +174,10 @@ export async function priceCart(payload: Payload, input: PriceInput): Promise<Qu
     couponValid,
     deliveryFee: fee,
     codFee,
-    pointsRedeemed: 0,
+    pointsRedeemed,
+    pointsUsed,
+    pointsAvailable,
+    pointsMin: loyalty.minRedeem ?? 0,
     total,
     eta: deliveryEta(delivery, input.city),
     warnings,

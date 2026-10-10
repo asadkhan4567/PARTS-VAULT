@@ -25,7 +25,12 @@ export type Quote = {
   couponValid: boolean
   deliveryFee: number
   codFee: number
+  /** Rupee value taken off by points */
   pointsRedeemed: number
+  /** Points that will be deducted */
+  pointsUsed: number
+  pointsAvailable: number
+  pointsMin: number
   total: number
   eta: string
   warnings: string[]

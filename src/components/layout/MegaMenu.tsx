@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
+import { T } from '@/components/providers/LangProvider'
 import { iconFor } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 
@@ -45,7 +46,7 @@ export function CategoriesMenu({ categories }: { categories: MenuCategory[] }) {
   return (
     <div ref={ref} className="relative" {...hover}>
       <button type="button" className={trigger} aria-expanded={open} onClick={() => setOpen(!open)}>
-        Parts Categories <ChevronDown className={cn('size-4 transition-transform', open && 'rotate-180')} />
+        <T k="parts_categories" /> <ChevronDown className={cn('size-4 transition-transform', open && 'rotate-180')} />
       </button>
       {open ? (
         <div className={panel}>
@@ -81,7 +82,7 @@ export function MakesMenu({ makes }: { makes: MenuMake[] }) {
   return (
     <div ref={ref} className="relative" {...hover}>
       <button type="button" className={trigger} aria-expanded={open} onClick={() => setOpen(!open)}>
-        Shop by Make <ChevronDown className={cn('size-4 transition-transform', open && 'rotate-180')} />
+        <T k="shop_by_make" /> <ChevronDown className={cn('size-4 transition-transform', open && 'rotate-180')} />
       </button>
       {open ? (
         <div className={panel}>

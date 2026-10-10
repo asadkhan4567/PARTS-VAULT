@@ -3,6 +3,7 @@ import type { CollectionConfig, Where } from 'payload'
 import { fieldManagers, fieldStaffOrWorkshop, managers, publishedOrStaff, staff } from '@/access'
 import { slugField } from '@/fields/slug'
 import { auditFields } from '@/hooks/audit'
+import { notifyProductAlerts } from '@/hooks/productAlerts'
 import { compactPartNumber } from '@/lib/search'
 
 export const Products: CollectionConfig = {
@@ -273,6 +274,6 @@ export const Products: CollectionConfig = {
         return { ...data, searchText: words.filter(Boolean).join(' ').toLowerCase() }
       },
     ],
-    afterChange: [auditFields(['price', 'compareAtPrice', 'workshopPrice', 'costPrice', 'stock'])],
+    afterChange: [auditFields(['price', 'compareAtPrice', 'workshopPrice', 'costPrice', 'stock']), notifyProductAlerts],
   },
 }

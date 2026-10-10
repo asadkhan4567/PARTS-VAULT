@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useId, useRef, useState } from 'react'
 
+import { useLang } from '@/components/providers/LangProvider'
 import { cn, formatPrice } from '@/lib/utils'
 
 type Suggestion = { id: number; title: string; slug: string; price: number; image: string | null; oem: string | null; fits: boolean | null }
@@ -33,6 +34,7 @@ export function saveRecentSearch(q: string) {
 /** Big header search with live suggestions (images + prices), part numbers and recent searches. */
 export function SearchBox({ className, autoFocus = false }: { className?: string; autoFocus?: boolean }) {
   const router = useRouter()
+  const { t } = useLang()
   const listId = useId()
   const [q, setQ] = useState('')
   const [open, setOpen] = useState(false)
@@ -125,7 +127,7 @@ export function SearchBox({ className, autoFocus = false }: { className?: string
             else if (e.key === 'ArrowUp') setActive((a) => Math.max(a - 1, -1))
             else if (e.key === 'Escape') setOpen(false)
           }}
-          placeholder="Search part name, OEM number or car… e.g. brake pads corolla"
+          placeholder={t('search_placeholder')}
           className="h-12 w-full rounded-lg border border-white/10 bg-white pl-11 pr-24 text-[15px] text-navy-950 shadow-sm placeholder:text-steel-400 focus:outline-2 focus:outline-red-600"
         />
         {loading ? <Loader2 className="absolute right-24 top-1/2 size-4 -translate-y-1/2 animate-spin text-steel-400" /> : null}
@@ -135,7 +137,7 @@ export function SearchBox({ className, autoFocus = false }: { className?: string
           </button>
         ) : null}
         <button type="submit" className="absolute right-1.5 top-1.5 h-9 rounded-md bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700">
-          Search
+          {t('search')}
         </button>
       </form>
 

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { LogoutButton } from '@/components/account/LogoutButton'
+import { WorkshopApply } from '@/components/account/WorkshopApply'
 import { getSettings } from '@/lib/data/settings'
 import { statusLabel } from '@/lib/orders/status'
 import { getPayloadClient } from '@/lib/payload'
@@ -76,6 +77,13 @@ export default async function AccountPage() {
             <p className="text-sm text-muted-foreground">No orders yet.</p>
           )}
         </section>
+        {customer.type !== 'workshop' ? (
+          <section className="rounded-brand border bg-white p-5">
+            <h2 className="mb-1 text-2xl">Own a workshop?</h2>
+            <p className="mb-4 text-sm text-muted-foreground">Get trade prices on every part, priority delivery and monthly statements.</p>
+            <WorkshopApply pending={Boolean(customer.workshopRequestedAt)} />
+          </section>
+        ) : null}
         {customer.addresses?.length ? (
           <section className="rounded-brand border bg-white p-5">
             <h2 className="mb-4 flex items-center gap-2 text-2xl">

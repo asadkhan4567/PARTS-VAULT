@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, useTransition } from 'react'
 
+import { syncGarage } from '@/app/(frontend)/account/actions'
 import { GARAGE_KEY, sameVehicle, serializeVehicle, VEHICLE_COOKIE, type Vehicle, type VehicleTree } from '@/lib/vehicle'
 
 type VehicleCtx = {
@@ -35,7 +36,7 @@ function writeCookie(v: Vehicle | null) {
 }
 
 /** Active vehicle lives in a cookie (so pages render "Fits ✓" on the server); the garage in localStorage. */
-export function VehicleProvider({ initial, tree, children }: { initial: Vehicle | null; tree: VehicleTree; children: React.ReactNode }) {
+export function VehicleProvider({ initial, tree, loggedIn = false, children }: { initial: Vehicle | null; tree: VehicleTree; loggedIn?: boolean; children: React.ReactNode }) {
   const router = useRouter()
   const [vehicle, setVehicle] = useState<Vehicle | null>(initial)
   const [garage, setGarage] = useState<Vehicle[]>([])
@@ -43,6 +44,14 @@ export function VehicleProvider({ initial, tree, children }: { initial: Vehicle 
   const [pending, startTransition] = useTransition()
 
   useEffect(() => setGarage(readGarage()), [])
+  // Logged-in shoppers: merge this device's garage with their account once per visit.
+  useEffect(() => {
+    if (!loggedIn) return
+    syncGarage(readGarage())
+      .then((merged) => merged && persistGarage(merged))
+      .catch(() => undefined)
+     
+  }, [loggedIn])
 
   const persistGarage = (next: Vehicle[]) => {
     setGarage(next)
@@ -57,11 +66,13 @@ export function VehicleProvider({ initial, tree, children }: { initial: Vehicle 
     (v: Vehicle) => {
       setVehicle(v)
       writeCookie(v)
-      persistGarage([v, ...readGarage().filter((g) => !sameVehicle(g, v))].slice(0, 6))
+      const next = [v, ...readGarage().filter((g) => !sameVehicle(g, v))].slice(0, 6)
+      persistGarage(next)
+      if (loggedIn) void syncGarage(next).catch(() => undefined)
       setFinderOpen(false)
       startTransition(() => router.refresh())
     },
-    [router],
+    [router, loggedIn],
   )
 
   const clear = useCallback(() => {

@@ -6,7 +6,7 @@ Next.js 15, Payload CMS 3 (admin panel + backend) and PostgreSQL.
 The owner runs the whole store from the admin panel at `/admin`: products, prices, stock,
 categories, banners, phone/WhatsApp numbers, pages and orders. No code changes needed.
 
-> Build status: **Phases 0–5** (setup, admin, storefront, checkout & orders, motion & 3D, admin power tools) are complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
+> Build status: **Phases 0–6** are complete (setup, admin, storefront, checkout & orders, motion & 3D, admin power tools, extras). See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
 > for the full plan and the phases still to come.
 
 ## Run it locally
@@ -94,6 +94,28 @@ Without a seed, the first visit to `/admin` asks you to create the first user �
   emails). Emails need `RESEND_API_KEY` (free at resend.com); without it they are only logged.
 - Coupons (Marketing → Coupons): % off with a cap, fixed Rs off, or free delivery; minimum order,
   dates, usage limit and "first order only" (checked by phone number).
+
+### Extras
+
+- **Yaar Points:** customers earn points when an order is marked Delivered and can spend them at
+  checkout (Marketing → Yaar Points sets the earn rate, value, minimum and max % per order).
+  Points spent on a cancelled order are given back.
+- **Reviews:** shoppers can review any product with stars, text and up to 3 photos. Reviews wait
+  for you (Marketing → Reviews → tick *Approved*). "Verified buyer" is added automatically when a
+  delivered order contains the product.
+- **Back-in-stock / price-drop alerts:** emails go out automatically when you restock or lower
+  a price. Phone-only requests stay in Marketing → Product alerts for you to WhatsApp.
+- **Workshops (B2B):** customers apply from their account; approve by setting the customer's
+  *Type* to Workshop — they then see workshop prices everywhere.
+- **Wishlist & garage** follow logged-in customers across devices.
+- **Urdu:** the اردو / English switch in the header changes the site to right-to-left with Urdu
+  labels. Write product and page text in Urdu in the admin if you want it translated too.
+- **Offer popup:** Marketing → Offer Popup (text, image, coupon, delay; once per visit, never at
+  checkout).
+- **Online payments:** Settings → Payment Settings. JazzCash (Merchant ID, password, integrity
+  salt), Easypaisa (store ID, hash key) and cards via Safepay or PayFast (keys from your gateway
+  dashboard). Leave *Sandbox* ticked until you've done a test payment. Set the gateway's return
+  URL to `https://yourdomain/pay/callback/jazzcash` (or `easypaisa` / `card`).
 
 ### Staff roles
 

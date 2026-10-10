@@ -28,6 +28,12 @@ const afterStatusChange: CollectionAfterChangeHook<Order> = async ({ doc, previo
         req,
       })
     }
+    // Give back any Yaar Points spent on a cancelled/returned order.
+    const refundTo = idOf(doc.customer)
+    if (refundTo && doc.pointsUsed) {
+      const c = await payload.findByID({ collection: 'customers', id: refundTo, depth: 0, overrideAccess: true, req }).catch(() => null)
+      if (c) await payload.update({ collection: 'customers', id: refundTo, data: { points: (c.points ?? 0) + doc.pointsUsed }, overrideAccess: true, req })
+    }
     await payload.update({ collection: 'orders', id: doc.id, data: { stockRestored: true }, overrideAccess: true, req, context: { skipOrderEffects: true } })
   }
 
@@ -190,7 +196,8 @@ export const Orders: CollectionConfig = {
               fields: [
                 { name: 'couponCode', type: 'text' },
                 { name: 'discount', type: 'number', defaultValue: 0, min: 0 },
-                { name: 'pointsRedeemed', type: 'number', defaultValue: 0, min: 0 },
+                { name: 'pointsRedeemed', label: 'Points discount (Rs)', type: 'number', defaultValue: 0, min: 0 },
+                { name: 'pointsUsed', type: 'number', defaultValue: 0, min: 0, admin: { readOnly: true } },
                 { name: 'total', type: 'number', admin: { readOnly: true } },
               ],
             },

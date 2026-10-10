@@ -4,6 +4,7 @@ import { Car, CheckCircle2, ChevronDown, X } from 'lucide-react'
 import Link from 'next/link'
 
 import { useVehicle } from '@/components/providers/VehicleProvider'
+import { useLang } from '@/components/providers/LangProvider'
 import { Sheet } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import { sameVehicle, vehicleLabel } from '@/lib/vehicle'
@@ -13,6 +14,7 @@ import { VehicleFinder } from './VehicleFinder'
 /** Compact "Select vehicle" / "Corolla 2018 ✓" button in the header + the finder dialog. */
 export function VehicleSelector({ className, compact = false }: { className?: string; compact?: boolean }) {
   const { vehicle, garage, finderOpen, openFinder, closeFinder, select, clear } = useVehicle()
+  const { t } = useLang()
 
   return (
     <>
@@ -27,11 +29,11 @@ export function VehicleSelector({ className, compact = false }: { className?: st
         )}
       >
         {vehicle ? <CheckCircle2 className="size-4 shrink-0 text-success" /> : <Car className="size-4 shrink-0 text-red-600" />}
-        <span className="truncate">{vehicle ? `${vehicle.modelName} ${vehicle.year}` : compact ? 'My car' : 'Select vehicle'}</span>
+        <span className="truncate">{vehicle ? `${vehicle.modelName} ${vehicle.year}` : compact ? t('my_car') : t('select_vehicle')}</span>
         <ChevronDown className="size-4 shrink-0 opacity-60" />
       </button>
 
-      <Sheet open={finderOpen} onOpenChange={(o) => (o ? openFinder() : closeFinder())} title="Select your vehicle" description="We’ll show “Fits ✓” on every part." side="center">
+      <Sheet open={finderOpen} onOpenChange={(o) => (o ? openFinder() : closeFinder())} title={t('select_your_vehicle')} description={t('finder_hint')} side="center">
         <div className="space-y-5 p-5">
           {vehicle ? (
             <div className="flex items-center justify-between gap-3 rounded-lg border border-success/40 bg-success/10 p-3 text-sm">

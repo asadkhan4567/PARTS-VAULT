@@ -6,7 +6,12 @@ import { staff } from '@/access'
 export const StockAlerts: CollectionConfig = {
   slug: 'stock-alerts',
   labels: { singular: 'Product alert', plural: 'Product alerts' },
-  admin: { useAsTitle: 'contact', defaultColumns: ['product', 'type', 'contact', 'notified', 'createdAt'], group: 'Marketing' },
+  admin: {
+    useAsTitle: 'contact',
+    defaultColumns: ['product', 'type', 'contact', 'notified', 'createdAt'],
+    group: 'Marketing',
+    description: 'Email requests are notified automatically. Phone numbers: WhatsApp them yourself, then tick Notified.',
+  },
   access: { read: staff, create: staff, update: staff, delete: staff },
   fields: [
     { name: 'product', type: 'relationship', relationTo: 'products', required: true, index: true },

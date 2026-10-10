@@ -18,7 +18,7 @@ import { normalizePkPhone } from '@/lib/whatsapp'
 const itemsSchema = z.array(z.object({ productId: z.number().int().positive(), quantity: z.number().int().min(1).max(99) })).max(100)
 
 /** Live totals for the cart and checkout pages (re-priced from the database). */
-export async function quoteCart(input: { items: CartLineInput[]; city?: string | null; couponCode?: string | null; paymentMethod?: string | null; phone?: string | null }): Promise<Quote> {
+export async function quoteCart(input: { items: CartLineInput[]; city?: string | null; couponCode?: string | null; paymentMethod?: string | null; phone?: string | null; usePoints?: boolean }): Promise<Quote> {
   const items = itemsSchema.safeParse(input.items)
   const payload = await getPayloadClient()
   const customer = await getCustomer()
@@ -29,6 +29,7 @@ export async function quoteCart(input: { items: CartLineInput[]; city?: string |
     paymentMethod: input.paymentMethod,
     phone: input.phone ? normalizePkPhone(input.phone) : null,
     customer,
+    usePoints: Boolean(input.usePoints),
   })
 }
 
@@ -56,6 +57,7 @@ const checkoutSchema = z.object({
   couponCode: z.string().trim().max(40).optional(),
   note: z.string().trim().max(500).optional(),
   vehicle: z.string().trim().max(120).optional(),
+  usePoints: z.string().optional(),
   company: z.string().max(0).optional(),
 })
 
@@ -81,7 +83,7 @@ export async function placeOrder(form: FormData): Promise<CheckoutResult> {
   const allowed = availablePayments(paymentSettings, delivery.codFee ?? 0, delivery.codEnabled !== false)
   if (!allowed.some((p) => p.id === data.paymentMethod)) return { ok: false, message: 'That payment method isn’t available.', errors: { paymentMethod: 'Choose another payment method' } }
 
-  const quote = await priceCart(payload, { items: data.items, city, couponCode: data.couponCode, paymentMethod: data.paymentMethod, phone: data.phone, customer })
+  const quote = await priceCart(payload, { items: data.items, city, couponCode: data.couponCode, paymentMethod: data.paymentMethod, phone: data.phone, customer, usePoints: data.usePoints === '1' })
   if (!quote.lines.length) return { ok: false, message: 'Your cart is empty or the items sold out.', quote }
   if (quote.lines.some((l) => l.quantity < l.requested)) return { ok: false, message: 'Some quantities changed because of stock — please review your order.', quote }
   if (data.couponCode && !quote.couponValid) return { ok: false, message: quote.couponMessage ?? 'Coupon not valid', errors: { couponCode: quote.couponMessage ?? 'Not valid' }, quote }
@@ -127,9 +129,16 @@ export async function placeOrder(form: FormData): Promise<CheckoutResult> {
         codFee: quote.codFee,
         couponCode: quote.couponCode ?? undefined,
         discount: quote.bundleDiscount + quote.couponDiscount,
+        pointsRedeemed: quote.pointsRedeemed,
+        pointsUsed: quote.pointsUsed,
         deliveryEta: quote.eta,
       },
     })
+    if (customer && quote.pointsUsed) {
+      const fresh = await payload.findByID({ collection: 'customers', id: customer.id, depth: 0, overrideAccess: true, req })
+      if ((fresh.points ?? 0) < quote.pointsUsed) throw new Error('POINTS')
+      await payload.update({ collection: 'customers', id: customer.id, data: { points: (fresh.points ?? 0) - quote.pointsUsed }, overrideAccess: true, req })
+    }
     if (quote.couponCode) {
       const { docs } = await payload.find({ collection: 'coupons', where: { code: { equals: quote.couponCode } }, limit: 1, overrideAccess: true, req })
       if (docs[0]) await payload.update({ collection: 'coupons', id: docs[0].id, data: { usedCount: (docs[0].usedCount ?? 0) + 1 }, overrideAccess: true, req })
@@ -137,8 +146,14 @@ export async function placeOrder(form: FormData): Promise<CheckoutResult> {
     await commitTransaction(req)
   } catch (err) {
     await killTransaction(req)
-    const msg = err instanceof Error && err.message.startsWith('STOCK:') ? `Sorry — ${err.message.slice(6)} just sold out. Please review your cart.` : 'We couldn’t place your order. Please try again or order on WhatsApp.'
-    if (!(err instanceof Error && err.message.startsWith('STOCK:'))) payload.logger.error({ err }, 'placeOrder failed')
+    const known = err instanceof Error && (err.message.startsWith('STOCK:') || err.message === 'POINTS')
+    const msg =
+      err instanceof Error && err.message.startsWith('STOCK:')
+        ? `Sorry — ${err.message.slice(6)} just sold out. Please review your cart.`
+        : err instanceof Error && err.message === 'POINTS'
+          ? 'Your points balance changed — please review your order.'
+          : 'We couldn’t place your order. Please try again or order on WhatsApp.'
+    if (!known) payload.logger.error({ err }, 'placeOrder failed')
     return { ok: false, message: msg }
   }
 
@@ -155,12 +170,8 @@ export async function placeOrder(form: FormData): Promise<CheckoutResult> {
   if (staffTo.length) sends.push(payload.sendEmail({ to: staffTo, ...newOrderAlertEmail(order, absoluteUrl(`/admin/collections/orders/${order.id}`)) }))
   await Promise.allSettled(sends)
 
-  let redirect: string | undefined
-  if (adapter?.start) {
-    const start = await adapter.start(order, paymentSettings, { returnUrl: absoluteUrl(`/order/${order.orderNumber}?t=${token}`) }).catch(() => null)
-    if (start?.kind === 'redirect') redirect = start.url
-    else if (start?.kind === 'form') redirect = `/pay/${order.orderNumber}?t=${token}`
-  }
+  // Online gateways: /pay builds the signed request and sends the shopper to the gateway.
+  const redirect = adapter?.start ? `/pay/${order.orderNumber}?t=${token}` : undefined
   return { ok: true, orderNumber: order.orderNumber!, token, redirect }
 }
 
