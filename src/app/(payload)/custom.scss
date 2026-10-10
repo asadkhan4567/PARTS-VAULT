@@ -1,0 +1,100 @@
+// Partsyaar admin theme: navy + red on Payload's design tokens.
+:root {
+  --theme-success-500: #1db954;
+  --theme-warning-500: #f5a524;
+  --theme-error-500: #e10600;
+  --style-radius-s: 6px;
+  --style-radius-m: 10px;
+  --style-radius-l: 12px;
+}
+
+html[data-theme='light'] {
+  --theme-elevation-0: #ffffff;
+  --theme-elevation-50: #f4f7fb;
+  --theme-elevation-100: #e8eef7;
+  --theme-elevation-800: #12305c;
+  --theme-elevation-900: #0a1a33;
+  --theme-elevation-1000: #06122a;
+}
+
+html[data-theme='dark'] {
+  --theme-elevation-0: #06122a;
+  --theme-elevation-50: #0a1a33;
+  --theme-elevation-100: #0f2444;
+  --theme-elevation-150: #12305c;
+  --theme-bg: #06122a;
+}
+
+.btn--style-primary {
+  --bg-color: #e10600;
+  --hover-bg: #b30500;
+  --color: #fff;
+  --hover-color: #fff;
+  background-color: #e10600;
+  color: #fff;
+  &:hover {
+    background-color: #b30500;
+  }
+}
+
+.py-admin-logo svg {
+  height: 52px;
+  width: auto;
+}
+.py-admin-logo__dark {
+  display: none;
+}
+html[data-theme='dark'] {
+  .py-admin-logo__light {
+    display: none;
+  }
+  .py-admin-logo__dark {
+    display: block;
+  }
+}
+
+.py-welcome {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 14px;
+  background: linear-gradient(150deg, #0a1a33, #06122a);
+  color: #fff;
+
+  h2 {
+    margin: 0 0 0.25rem;
+    color: #fff;
+  }
+  p {
+    margin: 0 0 1rem;
+    color: #8a97ab;
+  }
+}
+.py-welcome__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+.py-welcome__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.08);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  color: #fff;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+
+  strong {
+    font-size: 1rem;
+  }
+  span {
+    color: #8a97ab;
+    font-size: 0.85rem;
+  }
+  &:hover {
+    border-color: #e10600;
+    transform: translateY(-2px);
+  }
+}

@@ -6,7 +6,7 @@ Next.js 15, Payload CMS 3 (admin panel + backend) and PostgreSQL.
 The owner runs the whole store from the admin panel at `/admin`: products, prices, stock,
 categories, banners, phone/WhatsApp numbers, pages and orders. No code changes needed.
 
-> Build status: **Phase 0 — setup** is complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
+> Build status: **Phase 1 — data model + admin** is complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
 > for the full plan and the phases still to come.
 
 ## Run it locally
@@ -18,10 +18,14 @@ local PostgreSQL 16.
 cp .env.example .env              # then set PAYLOAD_SECRET to a long random string
 docker compose up -d postgres     # skip if you already run Postgres on :5432
 pnpm install
+pnpm seed                         # demo catalogue, settings, pages + the owner login from .env
 pnpm dev                          # http://localhost:3000  ·  admin: http://localhost:3000/admin
 ```
 
-The first visit to `/admin` asks you to create the first user — that user is the owner.
+`pnpm seed` creates the owner account from `SEED_OWNER_EMAIL` / `SEED_OWNER_PASSWORD` and loads
+18 car makes (86 model generations), 70 categories, 13 part brands, 44 products, pages, banners,
+reviews, blog posts and demo orders. `pnpm seed --reset` wipes the demo data and starts again.
+Without a seed, the first visit to `/admin` asks you to create the first user — that user is the owner.
 
 ## Scripts
 
@@ -48,15 +52,40 @@ The first visit to `/admin` asks you to create the first user — that user is t
 ## For the owner
 
 - **Log in:** go to `yourdomain.pk/admin` and sign in with your email and password.
-- Changing prices, the WhatsApp number, pages and orders is covered step by step here as each
-  phase lands (Phase 1 adds products, settings and pages to the admin panel).
+- The dashboard opens with big shortcuts: **Orders, Add a product, Change prices & stock,
+  Phone & WhatsApp, Homepage, Banners, Pages, Delivery**.
+- **Change a price:** Products → search the name, SKU or OEM number → open it → *Price (Rs)* →
+  **Publish changes**.
+- **Change the WhatsApp / phone number:** Settings → Site Settings → *Contact* tab → Save.
+  It updates on every page.
+- **Edit About Us / policies:** Content → Pages → open the page → edit the sections → Publish.
+- **Add a homepage banner:** Marketing → Banners → Create new → pick *Homepage — promo* →
+  upload the picture → Save. Optional start/end dates schedule it.
+- **Mark an order delivered:** Orders → open the order → *Status* (right side) → Delivered → Save.
+  The customer's tracking timeline updates automatically.
+- **Hide a section of the homepage:** Content → Homepage → untick *Show this section*, or drag
+  sections to reorder → Publish.
+
+### Staff roles
+
+| Role | Can do |
+| --- | --- |
+| Owner | Everything, including payment keys and adding/removing staff |
+| Manager | Prices, cost prices, coupons, catalogue, orders, content, settings |
+| Staff | Stock, orders, part requests, reviews, content — cannot change prices or see cost prices |
+
+Every change to a price, stock level or order status is recorded in **Settings → Audit log**.
 
 ## Project layout
 
 ```
 src/app/(frontend)/   storefront (Next.js App Router)
 src/app/(payload)/    Payload admin + REST/GraphQL API (generated — don't edit)
-src/collections/      Payload collections (data model)
+src/collections/      Payload collections: products, orders, customers, makes/models, …
+src/globals/          one-place settings: site, delivery, payments, homepage, menus, SEO, …
+src/blocks/           page-builder sections (homepage + pages)
+src/access/           roles: owner / manager / staff / customer
+src/seed/             demo data + placeholder artwork (`pnpm seed`)
 src/components/       ui/ (shadcn-style primitives), brand/ (logo)
 src/lib/              utils (cn, formatPrice, slugify), fonts
 tests/unit, tests/int Vitest     tests/e2e  Playwright

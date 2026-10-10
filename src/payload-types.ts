@@ -63,22 +63,57 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
+    customers: CustomerAuthOperations;
     users: UserAuthOperations;
   };
   blocks: {};
   collections: {
-    users: User;
+    orders: Order;
+    customers: Customer;
+    'part-requests': PartRequest;
+    products: Product;
+    categories: Category;
+    makes: Make;
+    models: Model;
+    'part-brands': PartBrand;
+    banners: Banner;
+    coupons: Coupon;
+    reviews: Review;
+    subscribers: Subscriber;
+    'stock-alerts': StockAlert;
+    pages: Page;
+    'blog-posts': BlogPost;
     media: Media;
+    users: User;
+    'audit-logs': AuditLog;
     'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
+    'part-requests': PartRequestsSelect<false> | PartRequestsSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    makes: MakesSelect<false> | MakesSelect<true>;
+    models: ModelsSelect<false> | ModelsSelect<true>;
+    'part-brands': PartBrandsSelect<false> | PartBrandsSelect<true>;
+    banners: BannersSelect<false> | BannersSelect<true>;
+    coupons: CouponsSelect<false> | CouponsSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
+    'stock-alerts': StockAlertsSelect<false> | StockAlertsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    'audit-logs': AuditLogsSelect<false> | AuditLogsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -87,16 +122,60 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    'delivery-settings': DeliverySetting;
+    'payment-settings': PaymentSetting;
+    navigation: Navigation;
+    'seo-defaults': SeoDefault;
+    homepage: Homepage;
+    'announcement-bar': AnnouncementBar;
+    popups: Popup;
+    'loyalty-settings': LoyaltySetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'delivery-settings': DeliverySettingsSelect<false> | DeliverySettingsSelect<true>;
+    'payment-settings': PaymentSettingsSelect<false> | PaymentSettingsSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    'seo-defaults': SeoDefaultsSelect<false> | SeoDefaultsSelect<true>;
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+    'announcement-bar': AnnouncementBarSelect<false> | AnnouncementBarSelect<true>;
+    popups: PopupsSelect<false> | PopupsSelect<true>;
+    'loyalty-settings': LoyaltySettingsSelect<false> | LoyaltySettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: Customer | User;
   jobs: {
-    tasks: unknown;
+    tasks: {
+      schedulePublish: TaskSchedulePublish;
+      inline: {
+        input: unknown;
+        output: unknown;
+      };
+    };
     workflows: unknown;
+  };
+}
+export interface CustomerAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
   };
 }
 export interface UserAuthOperations {
@@ -118,11 +197,761 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Change the Status and press Save — the customer timeline updates automatically.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  orderNumber?: string | null;
+  status: 'pending' | 'confirmed' | 'packed' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned';
+  paymentStatus: 'unpaid' | 'awaiting' | 'paid' | 'refunded' | 'failed';
+  /**
+   * Empty for guest checkout
+   */
+  customer?: (number | null) | Customer;
+  customerName: string;
+  phone: string;
+  email?: string | null;
+  city: string;
+  area?: string | null;
+  address: string;
+  /**
+   * Vehicle selected while shopping
+   */
+  vehicle?: string | null;
+  customerNote?: string | null;
+  riderName?: string | null;
+  riderPhone?: string | null;
+  deliveryEta?: string | null;
+  items: {
+    product?: (number | null) | Product;
+    title: string;
+    sku?: string | null;
+    unitPrice: number;
+    quantity: number;
+    lineTotal?: number | null;
+    id?: string | null;
+  }[];
+  subtotal?: number | null;
+  deliveryFee?: number | null;
+  codFee?: number | null;
+  couponCode?: string | null;
+  discount?: number | null;
+  pointsRedeemed?: number | null;
+  total?: number | null;
+  pointsEarned?: number | null;
+  paymentMethod: 'cod' | 'bank_transfer' | 'jazzcash' | 'easypaisa' | 'card';
+  /**
+   * Bank / wallet transaction ID
+   */
+  paymentReference?: string | null;
+  paymentProof?: (number | null) | Media;
+  /**
+   * Only staff see this.
+   */
+  internalNotes?: string | null;
+  timeline?:
+    | {
+        status?:
+          ('pending' | 'confirmed' | 'packed' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned') | null;
+        at?: string | null;
+        by?: string | null;
+        note?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: number;
+  name: string;
+  /**
+   * Pakistani mobile, e.g. 0300-1234567
+   */
+  phone: string;
+  type?: ('retail' | 'workshop') | null;
+  points?: number | null;
+  addresses?:
+    | {
+        label?: string | null;
+        city: string;
+        area?: string | null;
+        address: string;
+        id?: string | null;
+      }[]
+    | null;
+  garage?:
+    | {
+        make: number | Make;
+        model: number | Model;
+        year: number;
+        id?: string | null;
+      }[]
+    | null;
+  wishlist?: (number | Product)[] | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'customers';
+}
+/**
+ * Car brands (Toyota, Honda…). Untick "Visible" to hide a make from the store.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "makes".
+ */
+export interface Make {
+  id: number;
+  name: string;
+  logo?: (number | null) | Media;
+  visible?: boolean | null;
+  order?: number | null;
+  /**
+   * Web address. Leave empty to create it from the name automatically.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Image library. Every image needs a short description (alt text).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Describe the image for Google and blind shoppers, e.g. "Hitachi brake pads".
+   */
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    large?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    banner?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "models".
+ */
+export interface Model {
+  id: number;
+  make: number | Make;
+  /**
+   * e.g. Corolla
+   */
+  name: string;
+  yearFrom: number;
+  /**
+   * Leave empty if still on sale
+   */
+  yearTo?: number | null;
+  image?: (number | null) | Media;
+  /**
+   * Filled automatically
+   */
+  label?: string | null;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Every part in the store. Use "Save Draft" to prepare a product before it goes live.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  /**
+   * Format: Part – Make Model [YY–YY] – OEM No. – Brand. e.g. "Front Brake Pads – Toyota Corolla [14–22] – 04465-02220 – Hitachi"
+   */
+  title: string;
+  price: number;
+  compareAtPrice?: number | null;
+  workshopPrice?: number | null;
+  costPrice?: number | null;
+  stock: number;
+  lowStockThreshold?: number | null;
+  weightKg?: number | null;
+  sku: string;
+  oemNumber?: string | null;
+  crossRefs?:
+    | {
+        number: string;
+        brand?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * First image is the main one. Drag to reorder.
+   */
+  images?: (number | Media)[] | null;
+  partBrand: number | PartBrand;
+  condition: 'genuine' | 'oem' | 'aftermarket';
+  categories: (number | Category)[];
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  specs?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  warranty?: string | null;
+  videoUrl?: string | null;
+  /**
+   * Extra search words, incl. Roman Urdu: "brake ki pads"
+   */
+  tags?: string[] | null;
+  universalFit?: boolean | null;
+  fitments?:
+    | {
+        make: number | Make;
+        model: number | Model;
+        yearFrom: number;
+        /**
+         * Empty = up to today
+         */
+        yearTo?: number | null;
+        engine?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  boughtTogether?: (number | Product)[] | null;
+  bundleDiscountPercent?: number | null;
+  featured?: boolean | null;
+  bestSeller?: boolean | null;
+  /**
+   * Units sold (updated by orders)
+   */
+  salesCount?: number | null;
+  ratingAvg?: number | null;
+  ratingCount?: number | null;
+  /**
+   * Web address. Leave empty to create it from the name automatically.
+   */
+  slug?: string | null;
+  searchText?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Manufacturers like Bosch or Denso. "Trusted" brands scroll in the homepage marquee.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "part-brands".
+ */
+export interface PartBrand {
+  id: number;
+  name: string;
+  logo?: (number | null) | Media;
+  country?: string | null;
+  trusted?: boolean | null;
+  /**
+   * Web address. Leave empty to create it from the name automatically.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Top-level categories have no parent; sub-categories pick their parent.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  parent?: (number | null) | Category;
+  image?: (number | null) | Media;
+  icon?:
+    | (
+        | 'engine'
+        | 'car-front'
+        | 'lightbulb'
+        | 'disc'
+        | 'wrench'
+        | 'filter'
+        | 'droplet'
+        | 'snowflake'
+        | 'battery'
+        | 'sparkles'
+        | 'cog'
+      )
+    | null;
+  description?: string | null;
+  order?: number | null;
+  showOnHome?: boolean | null;
+  /**
+   * Web address. Leave empty to create it from the name automatically.
+   */
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "part-requests".
+ */
+export interface PartRequest {
+  id: number;
+  name: string;
+  phone: string;
+  vehicle?: string | null;
+  vin?: string | null;
+  partName?: string | null;
+  message?: string | null;
+  photo?: (number | null) | Media;
+  status?: ('new' | 'contacted' | 'quoted' | 'won' | 'closed') | null;
+  staffNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Pictures with a headline and button. Pick where they appear; optional start/end dates.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banners".
+ */
+export interface Banner {
+  id: number;
+  /**
+   * Internal name
+   */
+  title: string;
+  placement: 'home_hero' | 'home_promo' | 'home_feature' | 'category_top' | 'cart';
+  imageDesktop?: (number | null) | Media;
+  imageMobile?: (number | null) | Media;
+  eyebrow?: string | null;
+  headline?: string | null;
+  subtext?: string | null;
+  ctaText?: string | null;
+  ctaLink?: string | null;
+  theme?: ('navy' | 'red' | 'light') | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  active?: boolean | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coupons".
+ */
+export interface Coupon {
+  id: number;
+  code: string;
+  type: 'percent' | 'fixed' | 'free_delivery';
+  value?: number | null;
+  maxDiscount?: number | null;
+  minOrder?: number | null;
+  /**
+   * Empty = unlimited
+   */
+  usageLimit?: number | null;
+  usedCount?: number | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  firstOrderOnly?: boolean | null;
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Tick "Approved" to show a review on the website.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  product: number | Product;
+  customer?: (number | null) | Customer;
+  name: string;
+  city?: string | null;
+  rating: number;
+  title: string;
+  text: string;
+  photos?: (number | Media)[] | null;
+  verifiedBuyer?: boolean | null;
+  approved?: boolean | null;
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers".
+ */
+export interface Subscriber {
+  id: number;
+  email: string;
+  source?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stock-alerts".
+ */
+export interface StockAlert {
+  id: number;
+  product: number | Product;
+  type: 'back_in_stock' | 'price_drop';
+  contact: string;
+  priceAtRequest?: number | null;
+  notified?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * About Us, FAQ, policies and any other page. Build pages from sections.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Short line under the page title
+   */
+  intro?: string | null;
+  layout?:
+    | (
+        | {
+            enabled?: boolean | null;
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            enabled?: boolean | null;
+            image: number | Media;
+            caption?: string | null;
+            width?: ('content' | 'wide' | 'full') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'image';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            enabled?: boolean | null;
+            /**
+             * Pick a saved banner, or fill in below
+             */
+            banner?: (number | null) | Banner;
+            headline?: string | null;
+            text?: string | null;
+            cta?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            style?: ('navy' | 'red' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'banner';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            source?: ('manual' | 'category' | 'bestSellers' | 'onSale') | null;
+            products?: (number | Product)[] | null;
+            category?: (number | null) | Category;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productGrid';
+          }
+        | {
+            enabled?: boolean | null;
+            url?: string | null;
+            file?: (number | null) | Media;
+            caption?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            text?: string | null;
+            primary?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            secondary?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            whatsapp?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            showForm?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contact';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            text?: string | null;
+            buttonLabel?: string | null;
+            showForm?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'partRequest';
+          }
+        | {
+            enabled?: boolean | null;
+            items?:
+              | {
+                  icon?:
+                    | (
+                        | 'truck'
+                        | 'shield-check'
+                        | 'badge-percent'
+                        | 'gift'
+                        | 'wrench'
+                        | 'clock'
+                        | 'phone'
+                        | 'star'
+                        | 'package'
+                        | 'map-pin'
+                      )
+                    | null;
+                  title: string;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'trustStrip';
+          }
+        | {
+            enabled?: boolean | null;
+            items?:
+              | {
+                  value: number;
+                  prefix?: string | null;
+                  suffix?: string | null;
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+      )[]
+    | null;
+  /**
+   * Web address. Leave empty to create it from the name automatically.
+   */
+  slug?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts".
+ */
+export interface BlogPost {
+  id: number;
+  title: string;
+  cover?: (number | null) | Media;
+  /**
+   * One or two sentences for cards and Google
+   */
+  excerpt?: string | null;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  tags?: string[] | null;
+  relatedProducts?: (number | Product)[] | null;
+  author?: string | null;
+  publishedAt?: string | null;
+  /**
+   * Web address. Leave empty to create it from the name automatically.
+   */
+  slug?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * People who can log in to this admin panel.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  name: string;
+  role: 'owner' | 'manager' | 'staff';
+  phone?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -144,23 +973,30 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Who changed prices, stock and order statuses, and when. Read-only.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "audit-logs".
  */
-export interface Media {
+export interface AuditLog {
   id: number;
-  alt: string;
+  action?: ('create' | 'update' | 'delete' | 'bulk') | null;
+  collectionSlug?: string | null;
+  documentId?: string | null;
+  documentTitle?: string | null;
+  user?: (number | null) | User;
+  userLabel?: string | null;
+  changes?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -181,24 +1017,185 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs".
+ */
+export interface PayloadJob {
+  id: number;
+  /**
+   * Input data provided to the job
+   */
+  input?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  taskStatus?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedAt?: string | null;
+  totalTried?: number | null;
+  /**
+   * If hasError is true this job will not be retried
+   */
+  hasError?: boolean | null;
+  /**
+   * If hasError is true, this is the error that caused it
+   */
+  error?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Task execution log
+   */
+  log?:
+    | {
+        executedAt: string;
+        completedAt: string;
+        taskSlug: 'inline' | 'schedulePublish';
+        taskID: string;
+        input?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        output?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        state: 'failed' | 'succeeded';
+        error?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  taskSlug?: ('inline' | 'schedulePublish') | null;
+  queue?: string | null;
+  waitUntil?: string | null;
+  processing?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
+        relationTo: 'part-requests';
+        value: number | PartRequest;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'makes';
+        value: number | Make;
+      } | null)
+    | ({
+        relationTo: 'models';
+        value: number | Model;
+      } | null)
+    | ({
+        relationTo: 'part-brands';
+        value: number | PartBrand;
+      } | null)
+    | ({
+        relationTo: 'banners';
+        value: number | Banner;
+      } | null)
+    | ({
+        relationTo: 'coupons';
+        value: number | Coupon;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'subscribers';
+        value: number | Subscriber;
+      } | null)
+    | ({
+        relationTo: 'stock-alerts';
+        value: number | StockAlert;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'blog-posts';
+        value: number | BlogPost;
       } | null)
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'audit-logs';
+        value: number | AuditLog;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'customers';
+        value: number | Customer;
+      }
+    | {
+        relationTo: 'users';
+        value: number | User;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -208,10 +1205,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'customers';
+        value: number | Customer;
+      }
+    | {
+        relationTo: 'users';
+        value: number | User;
+      };
   key?: string | null;
   value?:
     | {
@@ -238,9 +1240,87 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "orders_select".
  */
-export interface UsersSelect<T extends boolean = true> {
+export interface OrdersSelect<T extends boolean = true> {
+  orderNumber?: T;
+  status?: T;
+  paymentStatus?: T;
+  customer?: T;
+  customerName?: T;
+  phone?: T;
+  email?: T;
+  city?: T;
+  area?: T;
+  address?: T;
+  vehicle?: T;
+  customerNote?: T;
+  riderName?: T;
+  riderPhone?: T;
+  deliveryEta?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        title?: T;
+        sku?: T;
+        unitPrice?: T;
+        quantity?: T;
+        lineTotal?: T;
+        id?: T;
+      };
+  subtotal?: T;
+  deliveryFee?: T;
+  codFee?: T;
+  couponCode?: T;
+  discount?: T;
+  pointsRedeemed?: T;
+  total?: T;
+  pointsEarned?: T;
+  paymentMethod?: T;
+  paymentReference?: T;
+  paymentProof?: T;
+  internalNotes?: T;
+  timeline?:
+    | T
+    | {
+        status?: T;
+        at?: T;
+        by?: T;
+        note?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  type?: T;
+  points?: T;
+  addresses?:
+    | T
+    | {
+        label?: T;
+        city?: T;
+        area?: T;
+        address?: T;
+        id?: T;
+      };
+  garage?:
+    | T
+    | {
+        make?: T;
+        model?: T;
+        year?: T;
+        id?: T;
+      };
+  wishlist?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -261,6 +1341,424 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "part-requests_select".
+ */
+export interface PartRequestsSelect<T extends boolean = true> {
+  name?: T;
+  phone?: T;
+  vehicle?: T;
+  vin?: T;
+  partName?: T;
+  message?: T;
+  photo?: T;
+  status?: T;
+  staffNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  price?: T;
+  compareAtPrice?: T;
+  workshopPrice?: T;
+  costPrice?: T;
+  stock?: T;
+  lowStockThreshold?: T;
+  weightKg?: T;
+  sku?: T;
+  oemNumber?: T;
+  crossRefs?:
+    | T
+    | {
+        number?: T;
+        brand?: T;
+        id?: T;
+      };
+  images?: T;
+  partBrand?: T;
+  condition?: T;
+  categories?: T;
+  description?: T;
+  specs?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  warranty?: T;
+  videoUrl?: T;
+  tags?: T;
+  universalFit?: T;
+  fitments?:
+    | T
+    | {
+        make?: T;
+        model?: T;
+        yearFrom?: T;
+        yearTo?: T;
+        engine?: T;
+        id?: T;
+      };
+  boughtTogether?: T;
+  bundleDiscountPercent?: T;
+  featured?: T;
+  bestSeller?: T;
+  salesCount?: T;
+  ratingAvg?: T;
+  ratingCount?: T;
+  slug?: T;
+  searchText?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  parent?: T;
+  image?: T;
+  icon?: T;
+  description?: T;
+  order?: T;
+  showOnHome?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "makes_select".
+ */
+export interface MakesSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  visible?: T;
+  order?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "models_select".
+ */
+export interface ModelsSelect<T extends boolean = true> {
+  make?: T;
+  name?: T;
+  yearFrom?: T;
+  yearTo?: T;
+  image?: T;
+  label?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "part-brands_select".
+ */
+export interface PartBrandsSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  country?: T;
+  trusted?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banners_select".
+ */
+export interface BannersSelect<T extends boolean = true> {
+  title?: T;
+  placement?: T;
+  imageDesktop?: T;
+  imageMobile?: T;
+  eyebrow?: T;
+  headline?: T;
+  subtext?: T;
+  ctaText?: T;
+  ctaLink?: T;
+  theme?: T;
+  startsAt?: T;
+  endsAt?: T;
+  active?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coupons_select".
+ */
+export interface CouponsSelect<T extends boolean = true> {
+  code?: T;
+  type?: T;
+  value?: T;
+  maxDiscount?: T;
+  minOrder?: T;
+  usageLimit?: T;
+  usedCount?: T;
+  startsAt?: T;
+  endsAt?: T;
+  firstOrderOnly?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  product?: T;
+  customer?: T;
+  name?: T;
+  city?: T;
+  rating?: T;
+  title?: T;
+  text?: T;
+  photos?: T;
+  verifiedBuyer?: T;
+  approved?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  source?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stock-alerts_select".
+ */
+export interface StockAlertsSelect<T extends boolean = true> {
+  product?: T;
+  type?: T;
+  contact?: T;
+  priceAtRequest?: T;
+  notified?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  intro?: T;
+  layout?:
+    | T
+    | {
+        richText?:
+          | T
+          | {
+              enabled?: T;
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        image?:
+          | T
+          | {
+              enabled?: T;
+              image?: T;
+              caption?: T;
+              width?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        banner?:
+          | T
+          | {
+              enabled?: T;
+              banner?: T;
+              headline?: T;
+              text?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              style?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productGrid?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              source?: T;
+              products?: T;
+              category?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              enabled?: T;
+              url?: T;
+              file?: T;
+              caption?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              text?: T;
+              primary?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              secondary?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              whatsapp?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contact?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              showForm?: T;
+              id?: T;
+              blockName?: T;
+            };
+        partRequest?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              text?: T;
+              buttonLabel?: T;
+              showForm?: T;
+              id?: T;
+              blockName?: T;
+            };
+        trustStrip?:
+          | T
+          | {
+              enabled?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              enabled?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    prefix?: T;
+                    suffix?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  slug?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  title?: T;
+  cover?: T;
+  excerpt?: T;
+  body?: T;
+  tags?: T;
+  relatedProducts?: T;
+  author?: T;
+  publishedAt?: T;
+  slug?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -276,6 +1774,91 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumb?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        large?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        banner?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  phone?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-logs_select".
+ */
+export interface AuditLogsSelect<T extends boolean = true> {
+  action?: T;
+  collectionSlug?: T;
+  documentId?: T;
+  documentTitle?: T;
+  user?: T;
+  userLabel?: T;
+  changes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -284,6 +1867,37 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs_select".
+ */
+export interface PayloadJobsSelect<T extends boolean = true> {
+  input?: T;
+  taskStatus?: T;
+  completedAt?: T;
+  totalTried?: T;
+  hasError?: T;
+  error?: T;
+  log?:
+    | T
+    | {
+        executedAt?: T;
+        completedAt?: T;
+        taskSlug?: T;
+        taskID?: T;
+        input?: T;
+        output?: T;
+        state?: T;
+        error?: T;
+        id?: T;
+      };
+  taskSlug?: T;
+  queue?: T;
+  waitUntil?: T;
+  processing?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -318,6 +1932,1010 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Store name, logo, phone and WhatsApp numbers, addresses, hours and social links — used everywhere on the site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  storeName: string;
+  tagline?: string | null;
+  logo?: (number | null) | Media;
+  logoLight?: (number | null) | Media;
+  aboutBlurb?: string | null;
+  footerText?: string | null;
+  ntn?: string | null;
+  strn?: string | null;
+  phone: string;
+  /**
+   * International format without + or spaces, e.g. 923001234567
+   */
+  whatsapp: string;
+  emails?:
+    | {
+        label?: string | null;
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Type an email and press Enter. Add as many as you like.
+   */
+  orderNotificationEmails?: string[] | null;
+  businessHours?: string | null;
+  stores?:
+    | {
+        name: string;
+        address: string;
+        city?: string | null;
+        phone?: string | null;
+        hours?: string | null;
+        mapUrl?: string | null;
+        mapEmbedQuery?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  social?: {
+    facebook?: string | null;
+    instagram?: string | null;
+    tiktok?: string | null;
+    youtube?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Delivery fees and times per city, same-day cutoff, free-delivery threshold, COD fee.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "delivery-settings".
+ */
+export interface DeliverySetting {
+  id: number;
+  sameDayEnabled?: boolean | null;
+  sameDayCutoff?: string | null;
+  freeDeliveryThreshold?: number | null;
+  defaultFee?: number | null;
+  defaultEta?: string | null;
+  codEnabled?: boolean | null;
+  codFee?: number | null;
+  zones?:
+    | {
+        city: string;
+        fee: number;
+        eta: string;
+        sameDay?: boolean | null;
+        /**
+         * Optional list of areas shoppers can pick
+         */
+        areas?: string[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  shippingSummary?: string | null;
+  returnsSummary?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Turn payment methods on/off. Only the Owner can change these.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-settings".
+ */
+export interface PaymentSetting {
+  id: number;
+  cod?: {
+    enabled?: boolean | null;
+    instructions?: string | null;
+  };
+  bankTransfer?: {
+    enabled?: boolean | null;
+    details?: string | null;
+  };
+  jazzcash?: {
+    enabled?: boolean | null;
+    sandbox?: boolean | null;
+    merchantId?: string | null;
+    password?: string | null;
+    integritySalt?: string | null;
+  };
+  easypaisa?: {
+    enabled?: boolean | null;
+    sandbox?: boolean | null;
+    storeId?: string | null;
+    hashKey?: string | null;
+  };
+  card?: {
+    enabled?: boolean | null;
+    provider?: ('safepay' | 'payfast') | null;
+    sandbox?: boolean | null;
+    publicKey?: string | null;
+    secretKey?: string | null;
+    webhookSecret?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Links in the header and footer.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  headerLinks?:
+    | {
+        label: string;
+        /**
+         * e.g. /category/brake-pads or https://wa.me/923001234567
+         */
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  megaMenuCategoryCount?: number | null;
+  megaMenuMakeCount?: number | null;
+  footerColumns?:
+    | {
+        title: string;
+        auto?: ('none' | 'makes' | 'categories') | null;
+        links?:
+          | {
+              label: string;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  paymentIcons?: ('cod' | 'bank' | 'jazzcash' | 'easypaisa' | 'visa' | 'mastercard')[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-defaults".
+ */
+export interface SeoDefault {
+  id: number;
+  /**
+   * %s is replaced by the page title
+   */
+  titleTemplate?: string | null;
+  defaultTitle?: string | null;
+  defaultDescription?: string | null;
+  ogImage?: (number | null) | Media;
+  ga4Id?: string | null;
+  metaPixelId?: string | null;
+  googleVerification?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Drag sections to reorder. Untick "Show this section" to hide one without deleting it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  sections?:
+    | (
+        | {
+            enabled?: boolean | null;
+            eyebrow?: string | null;
+            headline: string;
+            /**
+             * Words in the headline to colour red
+             */
+            highlight?: string | null;
+            subheadline?: string | null;
+            primaryCta?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            secondaryCta?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            backgroundImage?: (number | null) | Media;
+            backgroundVideo?: (number | null) | Media;
+            show3D?: boolean | null;
+            showFinder?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            enabled?: boolean | null;
+            items?:
+              | {
+                  icon?:
+                    | (
+                        | 'truck'
+                        | 'shield-check'
+                        | 'badge-percent'
+                        | 'gift'
+                        | 'wrench'
+                        | 'clock'
+                        | 'phone'
+                        | 'star'
+                        | 'package'
+                        | 'map-pin'
+                      )
+                    | null;
+                  title: string;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'trustStrip';
+          }
+        | {
+            enabled?: boolean | null;
+            items?:
+              | {
+                  value: number;
+                  prefix?: string | null;
+                  suffix?: string | null;
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            subheading?: string | null;
+            /**
+             * Empty = all visible makes
+             */
+            makes?: (number | Make)[] | null;
+            layout?: ('horizontal' | 'grid') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'shopByMake';
+          }
+        | {
+            enabled?: boolean | null;
+            /**
+             * Empty = all active banners placed "Homepage — promo"
+             */
+            banners?: (number | Banner)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'promoBanners';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            subheading?: string | null;
+            /**
+             * Empty = categories ticked "Show in Popular Categories"
+             */
+            categories?: (number | Category)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'popularCategories';
+          }
+        | {
+            enabled?: boolean | null;
+            /**
+             * Empty = all active banners placed "Homepage — feature"
+             */
+            banners?: (number | Banner)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featureBanners';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            product: number | Product;
+            /**
+             * Empty = countdown to midnight
+             */
+            endsAt?: string | null;
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'dealOfTheDay';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            tabs?:
+              | {
+                  label: string;
+                  source: 'bestSellers' | 'newArrivals' | 'featured' | 'onSale' | 'category' | 'manual';
+                  limit?: number | null;
+                  category?: (number | null) | Category;
+                  products?: (number | Product)[] | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productTabs';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            text?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'deliveryStrip';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'brandMarquee';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            text?: string | null;
+            buttonLabel?: string | null;
+            showForm?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'partRequest';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'reviews';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            limit?: number | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'blogTeaser';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            text?: string | null;
+            couponCode?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'newsletter';
+          }
+        | {
+            enabled?: boolean | null;
+            /**
+             * Pick a saved banner, or fill in below
+             */
+            banner?: (number | null) | Banner;
+            headline?: string | null;
+            text?: string | null;
+            cta?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            style?: ('navy' | 'red' | 'light') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'banner';
+          }
+        | {
+            enabled?: boolean | null;
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            enabled?: boolean | null;
+            heading?: string | null;
+            text?: string | null;
+            primary?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            secondary?: {
+              label?: string | null;
+              /**
+               * e.g. /category/brake-pads or https://wa.me/923001234567
+               */
+              url?: string | null;
+            };
+            whatsapp?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The thin red strip at the very top of every page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcement-bar".
+ */
+export interface AnnouncementBar {
+  id: number;
+  enabled?: boolean | null;
+  messages?:
+    | {
+        text: string;
+        link?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Colour code
+   */
+  background?: string | null;
+  textColor?: string | null;
+  intervalSeconds?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "popups".
+ */
+export interface Popup {
+  id: number;
+  enabled?: boolean | null;
+  title?: string | null;
+  text?: string | null;
+  image?: (number | null) | Media;
+  delaySeconds?: number | null;
+  couponCode?: string | null;
+  collectEmail?: boolean | null;
+  ctaText?: string | null;
+  ctaLink?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "loyalty-settings".
+ */
+export interface LoyaltySetting {
+  id: number;
+  enabled?: boolean | null;
+  pointsPer100?: number | null;
+  pointValue?: number | null;
+  minRedeem?: number | null;
+  maxRedeemPercent?: number | null;
+  tiers?:
+    | {
+        name: string;
+        minPoints: number;
+        multiplier?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  storeName?: T;
+  tagline?: T;
+  logo?: T;
+  logoLight?: T;
+  aboutBlurb?: T;
+  footerText?: T;
+  ntn?: T;
+  strn?: T;
+  phone?: T;
+  whatsapp?: T;
+  emails?:
+    | T
+    | {
+        label?: T;
+        email?: T;
+        id?: T;
+      };
+  orderNotificationEmails?: T;
+  businessHours?: T;
+  stores?:
+    | T
+    | {
+        name?: T;
+        address?: T;
+        city?: T;
+        phone?: T;
+        hours?: T;
+        mapUrl?: T;
+        mapEmbedQuery?: T;
+        id?: T;
+      };
+  social?:
+    | T
+    | {
+        facebook?: T;
+        instagram?: T;
+        tiktok?: T;
+        youtube?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "delivery-settings_select".
+ */
+export interface DeliverySettingsSelect<T extends boolean = true> {
+  sameDayEnabled?: T;
+  sameDayCutoff?: T;
+  freeDeliveryThreshold?: T;
+  defaultFee?: T;
+  defaultEta?: T;
+  codEnabled?: T;
+  codFee?: T;
+  zones?:
+    | T
+    | {
+        city?: T;
+        fee?: T;
+        eta?: T;
+        sameDay?: T;
+        areas?: T;
+        id?: T;
+      };
+  shippingSummary?: T;
+  returnsSummary?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payment-settings_select".
+ */
+export interface PaymentSettingsSelect<T extends boolean = true> {
+  cod?:
+    | T
+    | {
+        enabled?: T;
+        instructions?: T;
+      };
+  bankTransfer?:
+    | T
+    | {
+        enabled?: T;
+        details?: T;
+      };
+  jazzcash?:
+    | T
+    | {
+        enabled?: T;
+        sandbox?: T;
+        merchantId?: T;
+        password?: T;
+        integritySalt?: T;
+      };
+  easypaisa?:
+    | T
+    | {
+        enabled?: T;
+        sandbox?: T;
+        storeId?: T;
+        hashKey?: T;
+      };
+  card?:
+    | T
+    | {
+        enabled?: T;
+        provider?: T;
+        sandbox?: T;
+        publicKey?: T;
+        secretKey?: T;
+        webhookSecret?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  headerLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  megaMenuCategoryCount?: T;
+  megaMenuMakeCount?: T;
+  footerColumns?:
+    | T
+    | {
+        title?: T;
+        auto?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  paymentIcons?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo-defaults_select".
+ */
+export interface SeoDefaultsSelect<T extends boolean = true> {
+  titleTemplate?: T;
+  defaultTitle?: T;
+  defaultDescription?: T;
+  ogImage?: T;
+  ga4Id?: T;
+  metaPixelId?: T;
+  googleVerification?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  sections?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              enabled?: T;
+              eyebrow?: T;
+              headline?: T;
+              highlight?: T;
+              subheadline?: T;
+              primaryCta?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              secondaryCta?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              backgroundImage?: T;
+              backgroundVideo?: T;
+              show3D?: T;
+              showFinder?: T;
+              id?: T;
+              blockName?: T;
+            };
+        trustStrip?:
+          | T
+          | {
+              enabled?: T;
+              items?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              enabled?: T;
+              items?:
+                | T
+                | {
+                    value?: T;
+                    prefix?: T;
+                    suffix?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        shopByMake?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              subheading?: T;
+              makes?: T;
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        promoBanners?:
+          | T
+          | {
+              enabled?: T;
+              banners?: T;
+              id?: T;
+              blockName?: T;
+            };
+        popularCategories?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              subheading?: T;
+              categories?: T;
+              id?: T;
+              blockName?: T;
+            };
+        featureBanners?:
+          | T
+          | {
+              enabled?: T;
+              banners?: T;
+              id?: T;
+              blockName?: T;
+            };
+        dealOfTheDay?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              product?: T;
+              endsAt?: T;
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productTabs?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              tabs?:
+                | T
+                | {
+                    label?: T;
+                    source?: T;
+                    limit?: T;
+                    category?: T;
+                    products?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        deliveryStrip?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              text?: T;
+              id?: T;
+              blockName?: T;
+            };
+        brandMarquee?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        partRequest?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              text?: T;
+              buttonLabel?: T;
+              showForm?: T;
+              id?: T;
+              blockName?: T;
+            };
+        reviews?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        blogTeaser?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              limit?: T;
+              id?: T;
+              blockName?: T;
+            };
+        newsletter?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              text?: T;
+              couponCode?: T;
+              id?: T;
+              blockName?: T;
+            };
+        banner?:
+          | T
+          | {
+              enabled?: T;
+              banner?: T;
+              headline?: T;
+              text?: T;
+              cta?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              style?: T;
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              enabled?: T;
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              enabled?: T;
+              heading?: T;
+              text?: T;
+              primary?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              secondary?:
+                | T
+                | {
+                    label?: T;
+                    url?: T;
+                  };
+              whatsapp?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcement-bar_select".
+ */
+export interface AnnouncementBarSelect<T extends boolean = true> {
+  enabled?: T;
+  messages?:
+    | T
+    | {
+        text?: T;
+        link?: T;
+        id?: T;
+      };
+  background?: T;
+  textColor?: T;
+  intervalSeconds?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "popups_select".
+ */
+export interface PopupsSelect<T extends boolean = true> {
+  enabled?: T;
+  title?: T;
+  text?: T;
+  image?: T;
+  delaySeconds?: T;
+  couponCode?: T;
+  collectEmail?: T;
+  ctaText?: T;
+  ctaLink?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "loyalty-settings_select".
+ */
+export interface LoyaltySettingsSelect<T extends boolean = true> {
+  enabled?: T;
+  pointsPer100?: T;
+  pointValue?: T;
+  minRedeem?: T;
+  maxRedeemPercent?: T;
+  tiers?:
+    | T
+    | {
+        name?: T;
+        minPoints?: T;
+        multiplier?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
@@ -326,6 +2944,40 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSchedulePublish".
+ */
+export interface TaskSchedulePublish {
+  input: {
+    type?: ('publish' | 'unpublish') | null;
+    locale?: string | null;
+    doc?:
+      | ({
+          relationTo: 'products';
+          value: number | Product;
+        } | null)
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'blog-posts';
+          value: number | BlogPost;
+        } | null);
+    global?: string | null;
+    user?:
+      | ({
+          relationTo: 'customers';
+          value: number | Customer;
+        } | null)
+      | ({
+          relationTo: 'users';
+          value: number | User;
+        } | null);
+  };
+  output?: unknown;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

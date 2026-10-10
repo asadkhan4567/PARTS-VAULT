@@ -33,7 +33,16 @@ pnpm generate:importmap  # after adding admin components
   `rounded-brand`, not `rounded-[--radius-brand]`.
 - **No Stripe.** Payments go through a swappable adapter (COD, bank transfer, JazzCash, Easypaisa,
   Safepay/PayFast).
-- **Cost price never reaches the client** — field-level access on `costPrice`.
+- **Cost price never reaches the client** — field-level access on `costPrice` (managers only)
+  and `workshopPrice` (staff + workshop customers). Storefront reads must go through the Local
+  API with `overrideAccess: false` (plus the customer as `user` when logged in) so field access
+  applies; never render a doc fetched with `overrideAccess: true`.
+- **Roles** (`src/access`): owner > manager > staff in `users`; shoppers are `customers` and can
+  never open /admin. Price fields are manager-only; staff can change stock.
+- **Audit:** price/stock/order-status changes are logged via `hooks/audit.auditFields`; pass
+  `context: { skipAudit: true }` only for seed/system writes.
+- **Seed:** `pnpm seed [--reset]`; keep `src/seed/data/*` in sync when fields change.
+- Integration tests boot Payload against the real DB and run one file at a time.
 - **Accessibility:** never disable pinch-zoom; respect `prefers-reduced-motion`; keep focus rings.
 - **Secrets only in env**; document every new variable in `.env.example`.
 - Prices are whole rupees; format with `formatPrice()` (`Rs 8,425`).

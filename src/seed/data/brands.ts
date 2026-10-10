@@ -1,0 +1,15 @@
+export const PART_BRANDS: Array<{ name: string; country: string }> = [
+  { name: 'Genuine', country: 'OEM' },
+  { name: 'Bosch', country: 'Germany' },
+  { name: 'Brembo', country: 'Italy' },
+  { name: 'Mahle', country: 'Germany' },
+  { name: 'Mann', country: 'Germany' },
+  { name: 'Hengst', country: 'Germany' },
+  { name: 'Hitachi', country: 'Japan' },
+  { name: 'INA', country: 'Germany' },
+  { name: 'FAG Schaeffler', country: 'Germany' },
+  { name: 'Nissens', country: 'Denmark' },
+  { name: 'Onnuri', country: 'South Korea' },
+  { name: 'Denso', country: 'Japan' },
+  { name: 'NGK', country: 'Japan' },
+]
