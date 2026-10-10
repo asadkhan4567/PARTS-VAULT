@@ -15,6 +15,6 @@ export async function GET(req: NextRequest) {
   if (!ids.length) return NextResponse.json([])
   const [{ docs }, customer] = await Promise.all([listProducts({ ids, limit: 50, sort: 'popular' }), getCustomer()])
   return NextResponse.json(
-    docs.map((p) => ({ id: p.id, title: p.title, slug: p.slug, price: priceFor(p, customer), image: mediaUrl(p.images?.[0], 'thumb'), stock: p.stock })),
+    docs.map((p) => ({ id: p.id, title: p.title, slug: p.slug, sku: p.sku, price: priceFor(p, customer), image: mediaUrl(p.images?.[0], 'thumb'), stock: p.stock })),
   )
 }

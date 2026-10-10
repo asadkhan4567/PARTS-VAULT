@@ -1,8 +1,57 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionAfterChangeHook, CollectionConfig } from 'payload'
 
-import { managers, staff, staffOrOwnCustomer } from '@/access'
+import { fieldStaff, managers, staff, staffOrOwnCustomer } from '@/access'
 import { auditFields } from '@/hooks/audit'
+import { statusUpdateEmail } from '@/lib/email/templates'
 import { ORDER_STATUSES, PAYMENT_METHODS, nextOrderNumber } from '@/lib/orders/status'
+import { absoluteUrl } from '@/lib/url'
+import type { Order } from '@/payload-types'
+
+const idOf = (r: unknown) => (typeof r === 'object' && r ? (r as { id: number }).id : (r as number | null | undefined))
+
+/** Restock on cancel/return, credit loyalty points on delivery, email the customer. */
+const afterStatusChange: CollectionAfterChangeHook<Order> = async ({ doc, previousDoc, operation, req }) => {
+  if (operation !== 'update' || doc.status === previousDoc?.status || req.context?.skipOrderEffects) return doc
+  const payload = req.payload
+
+  if ((doc.status === 'cancelled' || doc.status === 'returned') && !doc.stockRestored) {
+    for (const item of doc.items ?? []) {
+      const id = idOf(item.product)
+      if (!id) continue
+      const p = await payload.findByID({ collection: 'products', id, depth: 0, overrideAccess: true, req }).catch(() => null)
+      if (!p) continue
+      await payload.update({
+        collection: 'products',
+        id,
+        data: { stock: p.stock + item.quantity, salesCount: Math.max(0, (p.salesCount ?? 0) - item.quantity) },
+        overrideAccess: true,
+        req,
+      })
+    }
+    await payload.update({ collection: 'orders', id: doc.id, data: { stockRestored: true }, overrideAccess: true, req, context: { skipOrderEffects: true } })
+  }
+
+  const customerId = idOf(doc.customer)
+  if (doc.status === 'delivered' && customerId && !doc.pointsCredited) {
+    const loyalty = await payload.findGlobal({ slug: 'loyalty-settings', overrideAccess: true, req })
+    if (loyalty.enabled) {
+      const customer = await payload.findByID({ collection: 'customers', id: customerId, depth: 0, overrideAccess: true, req }).catch(() => null)
+      if (customer) {
+        const tier = [...(loyalty.tiers ?? [])].sort((a, b) => b.minPoints - a.minPoints).find((t) => (customer.points ?? 0) >= t.minPoints)
+        const earned = Math.floor(((doc.total ?? 0) / 100) * (loyalty.pointsPer100 ?? 1) * (tier?.multiplier ?? 1))
+        await payload.update({ collection: 'customers', id: customerId, data: { points: (customer.points ?? 0) + earned }, overrideAccess: true, req })
+        await payload.update({ collection: 'orders', id: doc.id, data: { pointsCredited: true, pointsEarned: earned }, overrideAccess: true, req, context: { skipOrderEffects: true } })
+      }
+    }
+  }
+
+  if (doc.email) {
+    const mail = statusUpdateEmail(doc, absoluteUrl(`/track?order=${doc.orderNumber}`))
+    // Never fail a status change because email is down.
+    await payload.sendEmail({ to: doc.email, subject: mail.subject, html: mail.html }).catch((err: unknown) => payload.logger.error({ err }, 'status email failed'))
+  }
+  return doc
+}
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
@@ -38,6 +87,15 @@ export const Orders: CollectionConfig = {
       options: [...ORDER_STATUSES],
       admin: { position: 'sidebar' },
     },
+    {
+      // Secret for the guest confirmation link (/order/PY-…?t=…). Staff-only.
+      name: 'accessToken',
+      type: 'text',
+      access: { read: fieldStaff, update: () => false },
+      admin: { hidden: true },
+    },
+    { name: 'stockRestored', type: 'checkbox', defaultValue: false, admin: { hidden: true } },
+    { name: 'pointsCredited', type: 'checkbox', defaultValue: false, admin: { hidden: true } },
     {
       name: 'paymentStatus',
       type: 'select',
@@ -210,6 +268,6 @@ export const Orders: CollectionConfig = {
         return next
       },
     ],
-    afterChange: [auditFields(['status', 'paymentStatus', 'total'], 'orderNumber')],
+    afterChange: [auditFields(['status', 'paymentStatus', 'total'], 'orderNumber'), afterStatusChange],
   },
 }

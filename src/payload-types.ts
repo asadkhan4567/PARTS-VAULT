@@ -206,6 +206,9 @@ export interface Order {
   id: number;
   orderNumber?: string | null;
   status: 'pending' | 'confirmed' | 'packed' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned';
+  accessToken?: string | null;
+  stockRestored?: boolean | null;
+  pointsCredited?: boolean | null;
   paymentStatus: 'unpaid' | 'awaiting' | 'paid' | 'refunded' | 'failed';
   /**
    * Empty for guest checkout
@@ -1300,6 +1303,9 @@ export interface PayloadMigration {
 export interface OrdersSelect<T extends boolean = true> {
   orderNumber?: T;
   status?: T;
+  accessToken?: T;
+  stockRestored?: T;
+  pointsCredited?: T;
   paymentStatus?: T;
   customer?: T;
   customerName?: T;

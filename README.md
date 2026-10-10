@@ -6,7 +6,7 @@ Next.js 15, Payload CMS 3 (admin panel + backend) and PostgreSQL.
 The owner runs the whole store from the admin panel at `/admin`: products, prices, stock,
 categories, banners, phone/WhatsApp numbers, pages and orders. No code changes needed.
 
-> Build status: **Phases 0–2** (setup, admin, storefront) are complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
+> Build status: **Phases 0–3** (setup, admin, storefront, checkout & orders) are complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
 > for the full plan and the phases still to come.
 
 ## Run it locally
@@ -65,6 +65,19 @@ Without a seed, the first visit to `/admin` asks you to create the first user �
   The customer's tracking timeline updates automatically.
 - **Hide a section of the homepage:** Content → Homepage → untick *Show this section*, or drag
   sections to reorder → Publish.
+
+### Orders, payments and emails
+
+- Shoppers check out as guests or with an account (phone-first, Pakistani numbers validated).
+  Cash on Delivery and Bank Transfer are on by default (Settings → Payment Settings).
+- Every order gets a number like **PY-100245**. Stock is reduced the moment an order is placed
+  and put back automatically if you mark the order **Cancelled** or **Returned**.
+- Changing an order's **Status** emails the customer and updates their tracking page
+  (`/track`). Delivered orders credit **Yaar Points** to logged-in customers.
+- New-order alerts go to *Site Settings → Contact → Send new-order emails to* (or the support
+  emails). Emails need `RESEND_API_KEY` (free at resend.com); without it they are only logged.
+- Coupons (Marketing → Coupons): % off with a cap, fixed Rs off, or free delivery; minimum order,
+  dates, usage limit and "first order only" (checked by phone number).
 
 ### Staff roles
 
