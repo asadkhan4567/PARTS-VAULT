@@ -256,3 +256,52 @@
     offset-distance: 100%;
   }
 }
+
+/* CTA ripple + light sweep */
+[data-magnetic],
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+[data-magnetic]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.7s ease;
+}
+[data-magnetic]:hover::after {
+  transform: translateX(120%);
+}
+.py-ripple {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.5);
+  pointer-events: none;
+  animation: py-ripple 0.6s ease-out forwards;
+}
+@keyframes py-ripple {
+  to {
+    transform: scale(28);
+    opacity: 0;
+  }
+}
+
+html.py-preload .py-preloader {
+  display: grid;
+  /* Failsafe: gone by 1.5s even if JavaScript is slow; the GSAP door animation runs when ready. */
+  animation: py-preloader-out 0.3s ease 1.2s forwards;
+}
+@keyframes py-preloader-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}

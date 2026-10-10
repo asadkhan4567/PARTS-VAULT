@@ -38,12 +38,12 @@ export async function Header({ settings }: { settings: Settings }) {
         <AnnouncementBar messages={announcement.messages} background={announcement.background} color={announcement.textColor} interval={announcement.intervalSeconds} />
       ) : null}
       <StickyHeader>
-        <div className="container-py flex items-center gap-3 py-3 transition-[padding] duration-300 group-data-[shrunk]/header:py-2 md:gap-5">
+        <div className="container-py flex items-center gap-3 py-3 md:gap-5">
           <Link href="/" aria-label={`${site.storeName} home`} className="shrink-0">
             {logo ? (
               <Image src={logo} alt={site.storeName} width={180} height={40} className="h-9 w-auto md:h-10" priority />
             ) : (
-              <Logo className="h-8 transition-[height] duration-300 group-data-[shrunk]/header:h-7 md:h-10" />
+              <Logo className="h-8 origin-left transition-transform duration-300 group-data-[shrunk]/header:scale-90 md:h-10" />
             )}
           </Link>
           <SearchBox className="hidden flex-1 md:block" />

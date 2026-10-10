@@ -20,9 +20,11 @@ type Props = {
   navigate?: boolean
   tone?: 'dark' | 'light'
   className?: string
+  /** Full-width layout (more tiles per row on desktop). */
+  wide?: boolean
 }
 
-export function VehicleFinder({ navigate = false, tone = 'light', className }: Props) {
+export function VehicleFinder({ navigate = false, tone = 'light', className, wide = false }: Props) {
   const { tree, select } = useVehicle()
   const router = useRouter()
   const [make, setMake] = useState<Make | null>(null)
@@ -116,7 +118,7 @@ export function VehicleFinder({ navigate = false, tone = 'light', className }: P
         </label>
       ) : null}
 
-      <div key={step} className="grid max-h-72 animate-[py-fade_.25s_ease-out] grid-cols-3 gap-2 overflow-y-auto pr-1 sm:grid-cols-4">
+      <div key={step} className={cn('grid max-h-72 animate-[py-fade_.25s_ease-out] grid-cols-3 gap-2 overflow-y-auto pr-1 sm:grid-cols-4', wide && 'lg:max-h-48 lg:grid-cols-8')}>
         {step === 0 &&
           tree
             .filter((m) => m.name.toLowerCase().includes(q))

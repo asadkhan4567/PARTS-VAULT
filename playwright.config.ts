@@ -27,6 +27,8 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    // Deterministic UI: no preloader, 3D or smooth scroll unless a test opts in.
+    contextOptions: { reducedMotion: 'reduce' },
   },
   projects: [
     {

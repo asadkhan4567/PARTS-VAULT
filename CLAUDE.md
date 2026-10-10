@@ -46,3 +46,18 @@ pnpm generate:importmap  # after adding admin components
 - **Accessibility:** never disable pinch-zoom; respect `prefers-reduced-motion`; keep focus rings.
 - **Secrets only in env**; document every new variable in `.env.example`.
 - Prices are whole rupees; format with `formatPrice()` (`Rs 8,425`).
+
+## Motion (Phase 4)
+
+- `src/lib/gsap.ts` registers ScrollTrigger + useGSAP; `src/lib/lenis.ts` drives Lenis from the GSAP
+  ticker. `components/motion/MotionProvider.tsx` is the single place scroll/hover motion runs.
+- Opt in from markup: `data-split` (headline words), `data-reveal` (fade-up), `data-magnetic`
+  (CTA pull + light sweep + ripple), `data-tilt` (3D tilt), `data-pin-horizontal` + `data-pin-track`.
+- Preloader: inline head script adds `html.py-preload` on the first visit of a session only;
+  CSS failsafe hides it by 1.5s even without JS. Page wipe: `(frontend)/template.tsx`.
+- 3D hero (`components/three/HeroCar.tsx`, R3F, no drei) loads only on capable desktops via
+  `HeroVisual`; phones get the owner's hero video or an SVG. Measured: three.js ≈185 KB gz +
+  R3F ≈50 KB gz, lazy and off the critical path.
+- Reduced motion: no preloader, 3D, Lenis, pinning or parallax; CSS keeps simple fades.
+  E2E runs with `contextOptions.reducedMotion = 'reduce'` unless a test opts in.
+- Animate transform/opacity only.

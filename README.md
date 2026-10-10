@@ -6,7 +6,7 @@ Next.js 15, Payload CMS 3 (admin panel + backend) and PostgreSQL.
 The owner runs the whole store from the admin panel at `/admin`: products, prices, stock,
 categories, banners, phone/WhatsApp numbers, pages and orders. No code changes needed.
 
-> Build status: **Phases 0–3** (setup, admin, storefront, checkout & orders) are complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
+> Build status: **Phases 0–4** (setup, admin, storefront, checkout & orders, motion & 3D) are complete. See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
 > for the full plan and the phases still to come.
 
 ## Run it locally

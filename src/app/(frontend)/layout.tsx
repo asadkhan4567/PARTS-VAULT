@@ -5,6 +5,8 @@ import { CartDrawer } from '@/components/cart/CartDrawer'
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { MobileTabBar } from '@/components/layout/MobileTabBar'
+import { MotionProvider } from '@/components/motion/MotionProvider'
+import { Preloader, preloaderScript } from '@/components/motion/Preloader'
 import { WhatsAppFloat } from '@/components/layout/WhatsAppFloat'
 import { CartProvider } from '@/components/providers/CartProvider'
 import { VehicleProvider } from '@/components/providers/VehicleProvider'
@@ -21,9 +23,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const og = mediaUrl(seo.ogImage, 'large')
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'),
-    title: { default: seo.defaultTitle || site.storeName, template: seo.titleTemplate || `%s | ${site.storeName}` },
+    title: {
+      default: seo.defaultTitle || site.storeName,
+      template: seo.titleTemplate || `%s | ${site.storeName}`,
+    },
     description: seo.defaultDescription || undefined,
-    openGraph: { siteName: site.storeName, type: 'website', locale: 'en_PK', images: og ? [{ url: og }] : undefined },
+    openGraph: {
+      siteName: site.storeName,
+      type: 'website',
+      locale: 'en_PK',
+      images: og ? [{ url: og }] : undefined,
+    },
     verification: seo.googleVerification ? { google: seo.googleVerification } : undefined,
   }
 }
@@ -36,18 +46,28 @@ export const viewport: Viewport = {
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [settings, tree, vehicle] = await Promise.all([getSettings(), getVehicleTree(), getVehicle()])
+  const [settings, tree, vehicle] = await Promise.all([
+    getSettings(),
+    getVehicleTree(),
+    getVehicle(),
+  ])
   return (
-    <html lang="en" className={fontVariables}>
+    <html lang="en" className={fontVariables} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: preloaderScript }} />
+      </head>
       <body>
+        <Preloader />
         <VehicleProvider initial={vehicle} tree={tree}>
           <CartProvider>
-            <Header settings={settings} />
-            <main id="main">{children}</main>
-            <Footer settings={settings} />
-            <CartDrawer delivery={settings.delivery} />
-            <WhatsAppFloat number={settings.site.whatsapp} />
-            <MobileTabBar />
+            <MotionProvider>
+              <Header settings={settings} />
+              <main id="main">{children}</main>
+              <Footer settings={settings} />
+              <CartDrawer delivery={settings.delivery} />
+              <WhatsAppFloat number={settings.site.whatsapp} />
+              <MobileTabBar />
+            </MotionProvider>
           </CartProvider>
         </VehicleProvider>
       </body>

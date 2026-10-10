@@ -10,6 +10,7 @@ import { AddToCartButton } from '@/components/product/AddToCartButton'
 import { FitBadge, Stars, StockBadge } from '@/components/product/badges'
 import { ProductCard, toCartItem } from '@/components/product/ProductCard'
 import { Button } from '@/components/ui/button'
+import { HeroVisual } from '@/components/three/HeroVisual'
 import { VehicleFinder } from '@/components/vehicle/VehicleFinder'
 import { getCategoryTree, getMakes, getPartBrands } from '@/lib/data/catalog'
 import { getBanners, getBlogPosts, getReviews } from '@/lib/data/content'
@@ -56,6 +57,15 @@ export function Hero({ block, ctx }: { block: HeroBlock; ctx: BlockContext }) {
   const bg = mediaUrl(block.backgroundImage, 'banner')
   const primary = block.primaryCta?.label ? block.primaryCta : null
   const secondary = block.secondaryCta?.label ? block.secondaryCta : null
+  const video = mediaUrl(block.backgroundVideo)
+  const show3D = block.show3D !== false
+  const finder = block.showFinder ? (
+    <div className="glass rounded-2xl p-4 shadow-2xl sm:p-6" id="finder">
+      <p className="mb-1 font-heading text-2xl font-bold">Find parts for your car</p>
+      <p className="mb-4 text-sm text-steel-400">Select once — we’ll only show parts that fit.</p>
+      <VehicleFinder navigate tone="dark" wide={show3D} />
+    </div>
+  ) : null
   return (
     <section className="bg-hero relative isolate overflow-hidden text-white" data-hero>
       {bg ? <Image src={bg} alt="" fill priority sizes="100vw" className="-z-10 object-cover opacity-30" /> : null}
@@ -64,7 +74,7 @@ export function Hero({ block, ctx }: { block: HeroBlock; ctx: BlockContext }) {
         <div className="absolute -left-1/4 top-[62%] h-[3px] w-[150%] -rotate-6 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-80 blur-[1px] motion-safe:animate-[py-streak_6s_ease-in-out_infinite]" />
         <div className="absolute -right-40 -top-40 size-[520px] rounded-full bg-navy-500/30 blur-3xl" />
       </div>
-      <div className="container-py grid items-center gap-10 py-12 md:py-20 lg:grid-cols-[1.1fr_1fr]">
+      <div className={cn('container-py grid items-center gap-8 py-10 md:py-16', show3D ? 'lg:grid-cols-2' : 'lg:grid-cols-[1.1fr_1fr]')}>
         <div className="space-y-6">
           {block.eyebrow ? (
             <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/6 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/90">
@@ -73,7 +83,7 @@ export function Hero({ block, ctx }: { block: HeroBlock; ctx: BlockContext }) {
           ) : null}
           <h1 className="text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-7xl" data-split>
             {before}
-            {block.highlight && after !== undefined && block.headline.includes(block.highlight) ? <span className="text-red-600">{block.highlight}</span> : null}
+            {block.highlight && block.headline.includes(block.highlight) ? <span className="text-red-600">{block.highlight}</span> : null}
             {after}
           </h1>
           {block.subheadline ? <p className="max-w-xl text-base text-steel-400 md:text-lg">{block.subheadline}</p> : null}
@@ -95,13 +105,8 @@ export function Hero({ block, ctx }: { block: HeroBlock; ctx: BlockContext }) {
             ) : null}
           </div>
         </div>
-        {block.showFinder ? (
-          <div className="glass rounded-2xl p-4 shadow-2xl sm:p-6" id="finder">
-            <p className="mb-1 font-heading text-2xl font-bold">Find parts for your car</p>
-            <p className="mb-4 text-sm text-steel-400">Select once — we’ll only show parts that fit.</p>
-            <VehicleFinder navigate tone="dark" />
-          </div>
-        ) : null}
+        {show3D ? <div className={video ? 'h-56 sm:h-72 lg:h-[440px]' : 'hidden lg:block lg:h-[440px]'}><HeroVisual videoUrl={video} /></div> : finder}
+        {show3D && finder ? <div className="lg:col-span-2">{finder}</div> : null}
       </div>
     </section>
   )
