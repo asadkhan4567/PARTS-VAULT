@@ -1,0 +1,134 @@
+@import 'tailwindcss';
+
+/*
+ * Partsyaar design tokens. Brand colours are fixed (docs/BUILD_PLAN.md §2); shadcn/ui semantic
+ * tokens (--background, --primary, ...) map onto them so generated components pick up the theme.
+ */
+@theme {
+  --color-navy-950: #06122a;
+  --color-navy-900: #0a1a33;
+  --color-navy-700: #12305c;
+  --color-navy-500: #1e4a8a;
+  --color-navy-100: #e8eef7;
+  --color-red-600: #e10600;
+  --color-red-700: #b30500;
+  --color-red-glow: rgb(225 6 0 / 0.35);
+  --color-steel-400: #8a97ab;
+  --color-success: #1db954;
+  --color-warning: #f5a524;
+
+  --font-heading: var(--font-rajdhani), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-urdu: var(--font-nastaliq), serif;
+
+  --radius-brand: 12px;
+  --shadow-navy: 0 10px 30px -12px rgb(6 18 42 / 0.35);
+  --shadow-glow: 0 0 24px var(--color-red-glow);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 12px;
+  --background: #ffffff;
+  --foreground: var(--color-navy-950);
+  --card: #ffffff;
+  --card-foreground: var(--color-navy-950);
+  --primary: var(--color-red-600);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-navy-900);
+  --secondary-foreground: #ffffff;
+  --muted: var(--color-navy-100);
+  --muted-foreground: #4b5a70;
+  --accent: var(--color-navy-100);
+  --accent-foreground: var(--color-navy-900);
+  --destructive: var(--color-red-700);
+  --border: #d5deeb;
+  --input: #d5deeb;
+  --ring: var(--color-navy-500);
+}
+
+.dark {
+  --background: var(--color-navy-950);
+  --foreground: #f2f5fa;
+  --card: var(--color-navy-900);
+  --card-foreground: #f2f5fa;
+  --muted: var(--color-navy-700);
+  --muted-foreground: var(--color-steel-400);
+  --accent: var(--color-navy-700);
+  --accent-foreground: #ffffff;
+  --border: rgb(255 255 255 / 0.1);
+  --input: rgb(255 255 255 / 0.14);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading font-bold tracking-tight;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-navy-500;
+  }
+  [dir='rtl'] body,
+  :lang(ur) {
+    @apply font-urdu;
+    line-height: 2;
+  }
+}
+
+@utility glass {
+  background: rgb(255 255 255 / 0.08);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@utility bg-hero {
+  background:
+    radial-gradient(60% 80% at 80% 20%, rgb(30 74 138 / 0.55), transparent 70%),
+    linear-gradient(160deg, var(--color-navy-900), var(--color-navy-950));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
