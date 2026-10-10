@@ -24,7 +24,17 @@ type Props = {
 }
 
 /** "Quick view" slide-up on product cards (desktop hover; always tappable for keyboard users). */
-export function QuickView({ item, image, brand, oem, compareAt, inStock, fitText, fits, specs }: Props) {
+export function QuickView({
+  item,
+  image,
+  brand,
+  oem,
+  compareAt,
+  inStock,
+  fitText,
+  fits,
+  specs,
+}: Props) {
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -35,34 +45,63 @@ export function QuickView({ item, image, brand, oem, compareAt, inStock, fitText
       >
         <Eye className="size-4" /> Quick view
       </button>
-      <Sheet open={open} onOpenChange={setOpen} title="Quick view" side="center">
-        <div className="grid gap-5 p-5 sm:grid-cols-2">
-          <div className="relative aspect-square overflow-hidden rounded-xl bg-navy-100">{image ? <Image src={image} alt={item.title} fill sizes="(min-width:640px) 320px, 90vw" className="object-cover" /> : null}</div>
-          <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-steel-400">{brand}</p>
-            <h3 className="font-heading text-2xl leading-tight font-bold">{item.title.split(' – ').slice(0, 2).join(' – ')}</h3>
-            {oem ? <p className="font-mono text-sm text-muted-foreground">OEM {oem}</p> : null}
-            {fitText ? <p className={`text-sm font-semibold ${fits ? 'text-[#0f7a37]' : 'text-red-700'}`}>{fitText}</p> : null}
-            <p className="text-3xl font-bold text-red-600">
-              {formatPrice(item.price)} {compareAt && compareAt > item.price ? <span className="text-base font-normal text-muted-foreground line-through">{formatPrice(compareAt)}</span> : null}
-            </p>
-            {specs.length ? (
-              <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
-                {specs.slice(0, 4).map((s) => (
-                  <div key={s.label} className="contents">
-                    <dt className="text-muted-foreground">{s.label}</dt>
-                    <dd className="font-semibold">{s.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : null}
-            <AddToCartButton item={item} disabled={!inStock} size="lg" className="w-full" />
-            <Link href={`/product/${item.slug}`} onClick={() => setOpen(false)} className="block text-center text-sm font-semibold text-navy-500 hover:underline">
-              See full details →
-            </Link>
+      {open ? (
+        <Sheet open={open} onOpenChange={setOpen} title="Quick view" side="center">
+          <div className="grid gap-5 p-5 sm:grid-cols-2">
+            <div className="relative aspect-square overflow-hidden rounded-xl bg-navy-100">
+              {image ? (
+                <Image
+                  src={image}
+                  alt={item.title}
+                  fill
+                  sizes="(min-width:640px) 320px, 90vw"
+                  className="object-cover"
+                />
+              ) : null}
+            </div>
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {brand}
+              </p>
+              <h3 className="font-heading text-2xl leading-tight font-bold">
+                {item.title.split(' – ').slice(0, 2).join(' – ')}
+              </h3>
+              {oem ? <p className="font-mono text-sm text-muted-foreground">OEM {oem}</p> : null}
+              {fitText ? (
+                <p className={`text-sm font-semibold ${fits ? 'text-[#0f7a37]' : 'text-red-700'}`}>
+                  {fitText}
+                </p>
+              ) : null}
+              <p className="text-3xl font-bold text-red-600">
+                {formatPrice(item.price)}{' '}
+                {compareAt && compareAt > item.price ? (
+                  <span className="text-base font-normal text-muted-foreground line-through">
+                    {formatPrice(compareAt)}
+                  </span>
+                ) : null}
+              </p>
+              {specs.length ? (
+                <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-sm">
+                  {specs.slice(0, 4).map((s) => (
+                    <div key={s.label} className="contents">
+                      <dt className="text-muted-foreground">{s.label}</dt>
+                      <dd className="font-semibold">{s.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
+              <AddToCartButton item={item} disabled={!inStock} size="lg" className="w-full" />
+              <Link
+                href={`/product/${item.slug}`}
+                onClick={() => setOpen(false)}
+                className="block text-center text-sm font-semibold text-navy-500 hover:underline"
+              >
+                See full details →
+              </Link>
+            </div>
           </div>
-        </div>
-      </Sheet>
+        </Sheet>
+      ) : null}
     </>
   )
 }

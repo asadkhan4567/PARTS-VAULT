@@ -5,6 +5,7 @@ import React from 'react'
 
 import { WishlistSync } from '@/components/account/WishlistSync'
 import { LivePreviewListener } from '@/components/admin/LivePreviewListener'
+import { Analytics } from '@/components/layout/Analytics'
 import { OfferPopup } from '@/components/layout/OfferPopup'
 
 import { CartDrawer } from '@/components/cart/CartDrawer'
@@ -23,6 +24,7 @@ import { mediaUrl } from '@/lib/media'
 import { LangProvider } from '@/components/providers/LangProvider'
 import { LANG_COOKIE, parseLang } from '@/lib/i18n'
 import { getCustomer, getVehicle } from '@/lib/session'
+import { absoluteUrl } from '@/lib/url'
 
 import './globals.css'
 
@@ -43,6 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: og ? [{ url: og }] : undefined,
     },
     verification: seo.googleVerification ? { google: seo.googleVerification } : undefined,
+    alternates: { languages: { 'en-PK': '/', 'ur-PK': '/?lang=ur' } },
   }
 }
 
@@ -70,6 +73,32 @@ export default async function FrontendLayout({ children }: { children: React.Rea
       </head>
       <body>
         <Preloader />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: settings.site.storeName,
+                url: absoluteUrl('/'),
+                logo: absoluteUrl('/favicon.svg'),
+                sameAs: Object.values(settings.site.social ?? {}).filter((v) => typeof v === 'string' && v.startsWith('http')),
+                contactPoint: { '@type': 'ContactPoint', telephone: settings.site.phone, contactType: 'customer service', areaServed: 'PK', availableLanguage: ['en', 'ur'] },
+              },
+              ...(settings.site.stores ?? []).map((st) => ({
+                '@context': 'https://schema.org',
+                '@type': 'AutoPartsStore',
+                name: st.name,
+                url: absoluteUrl('/stores'),
+                telephone: st.phone ?? settings.site.phone,
+                address: { '@type': 'PostalAddress', streetAddress: st.address, addressLocality: st.city ?? 'Lahore', addressCountry: 'PK' },
+                openingHours: st.hours ?? settings.site.businessHours ?? undefined,
+                priceRange: 'Rs',
+              })),
+            ]),
+          }}
+        />
         {draft.isEnabled ? (
           <>
             <LivePreviewListener />
@@ -91,6 +120,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
               <CartDrawer delivery={settings.delivery} />
               <WhatsAppFloat number={settings.site.whatsapp} />
             {customer ? <WishlistSync /> : null}
+            <Analytics ga4Id={settings.seo.ga4Id} pixelId={settings.seo.metaPixelId} />
             {popup.enabled ? (
               <OfferPopup
                 title={popup.title}

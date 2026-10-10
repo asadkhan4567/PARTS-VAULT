@@ -41,7 +41,7 @@ export function Stars({ value, count, className, showCount = true }: { value: nu
   if (!count) return null
   const pct = Math.max(0, Math.min(100, (value / 5) * 100))
   return (
-    <span className={cn('inline-flex items-center gap-1 text-xs text-muted-foreground', className)} aria-label={`Rated ${value} out of 5 from ${count} reviews`}>
+    <span role="img" className={cn('inline-flex items-center gap-1 text-xs text-muted-foreground', className)} aria-label={`Rated ${value} out of 5 from ${count} reviews`}>
       <span className="relative inline-block font-mono text-sm leading-none tracking-tight text-steel-400/50" aria-hidden>
         ★★★★★
         <span className="absolute inset-0 overflow-hidden text-warning" style={{ width: `${pct}%` }}>

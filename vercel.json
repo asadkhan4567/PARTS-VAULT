@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm build:deploy",
+  "regions": ["bom1"],
+  "functions": {
+    "src/app/(payload)/api/[...slug]/route.ts": { "maxDuration": 60 }
+  }
+}

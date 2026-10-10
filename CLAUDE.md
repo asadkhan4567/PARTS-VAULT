@@ -42,6 +42,11 @@ pnpm generate:importmap  # after adding admin components
 - **Audit:** price/stock/order-status changes are logged via `hooks/audit.auditFields`; pass
   `context: { skipAudit: true }` only for seed/system writes.
 - **Seed:** `pnpm seed [--reset]`; keep `src/seed/data/*` in sync when fields change.
+- **Migrations:** dev uses schema push; production runs `src/migrations` on deploy
+  (`pnpm build:deploy`). After any collection/field change run `pnpm migrate:create <name>`
+  and commit the files. Verify on a fresh DB: `NODE_ENV=production pnpm migrate`.
+- **Rich text** renders server-side via `convertLexicalToHTML` (components/RichText.tsx);
+  never import `@payloadcms/richtext-lexical/react` in storefront code (ships the editor).
 - Integration tests boot Payload against the real DB and run one file at a time.
 - **Accessibility:** never disable pinch-zoom; respect `prefers-reduced-motion`; keep focus rings.
 - **Secrets only in env**; document every new variable in `.env.example`.
@@ -51,8 +56,10 @@ pnpm generate:importmap  # after adding admin components
 
 - `src/lib/gsap.ts` registers ScrollTrigger + useGSAP; `src/lib/lenis.ts` drives Lenis from the GSAP
   ticker. `components/motion/MotionProvider.tsx` is the single place scroll/hover motion runs.
-- Opt in from markup: `data-split` (headline words), `data-reveal` (fade-up), `data-magnetic`
+- Opt in from markup: `data-reveal` (fade-up, IntersectionObserver + CSS), `data-magnetic`
   (CTA pull + light sweep + ripple), `data-tilt` (3D tilt), `data-pin-horizontal` + `data-pin-track`.
+  Headline reveal = `<SplitWords>` (pure CSS, never delays LCP). GSAP/Lenis load after idle,
+  desktop only (`motion/desktop-effects.ts`).
 - Preloader: inline head script adds `html.py-preload` on the first visit of a session only;
   CSS failsafe hides it by 1.5s even without JS. Page wipe: `(frontend)/template.tsx`.
 - 3D hero (`components/three/HeroCar.tsx`, R3F, no drei) loads only on capable desktops via

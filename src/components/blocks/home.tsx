@@ -10,6 +10,7 @@ import { AddToCartButton } from '@/components/product/AddToCartButton'
 import { FitBadge, Stars, StockBadge } from '@/components/product/badges'
 import { ProductCard, toCartItem } from '@/components/product/ProductCard'
 import { Button } from '@/components/ui/button'
+import { SplitWords } from '@/components/motion/SplitWords'
 import { T } from '@/components/providers/LangProvider'
 import { HeroVisual } from '@/components/three/HeroVisual'
 import { VehicleFinder } from '@/components/vehicle/VehicleFinder'
@@ -54,7 +55,6 @@ const isExternal = (url: string) => url.startsWith('http')
 
 // ——— Hero ———
 export function Hero({ block, ctx }: { block: HeroBlock; ctx: BlockContext }) {
-  const [before, after] = block.highlight && block.headline.includes(block.highlight) ? block.headline.split(block.highlight) : [block.headline, '']
   const bg = mediaUrl(block.backgroundImage, 'banner')
   const primary = block.primaryCta?.label ? block.primaryCta : null
   const secondary = block.secondaryCta?.label ? block.secondaryCta : null
@@ -86,10 +86,8 @@ export function Hero({ block, ctx }: { block: HeroBlock; ctx: BlockContext }) {
               <span className="size-2 animate-pulse rounded-full bg-success" /> {block.eyebrow}
             </p>
           ) : null}
-          <h1 className="text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-7xl" data-split>
-            {before}
-            {block.highlight && block.headline.includes(block.highlight) ? <span className="text-red-600">{block.highlight}</span> : null}
-            {after}
+          <h1 className="text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-7xl">
+            <SplitWords text={block.headline} highlight={block.highlight} />
           </h1>
           {block.subheadline ? <p className="max-w-xl text-base text-steel-400 md:text-lg">{block.subheadline}</p> : null}
           <div className="flex flex-wrap gap-3">
@@ -212,7 +210,7 @@ function BannerCard({ banner, className, ctx, large = false }: { banner: Banner;
       ) : null}
       <div className={cn('absolute inset-0 -z-10', tone === 'light' ? 'bg-gradient-to-r from-white/90 to-white/10' : 'bg-gradient-to-r from-navy-950/85 via-navy-950/40 to-transparent')} />
       {banner.eyebrow ? <p className="mb-2 text-xs font-bold tracking-[0.2em] text-red-600 [.bg-red-700_&]:text-white/80">{banner.eyebrow}</p> : null}
-      {banner.headline ? <h3 className="max-w-md font-heading text-2xl leading-tight font-bold md:text-3xl">{banner.headline}</h3> : null}
+      {banner.headline ? <p className="max-w-md font-heading text-2xl leading-tight font-bold md:text-3xl">{banner.headline}</p> : null}
       {banner.subtext ? <p className="mt-2 max-w-md text-sm opacity-85">{banner.subtext}</p> : null}
       {banner.ctaText ? (
         <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-navy-900 transition-colors group-hover:bg-red-600 group-hover:text-white">
@@ -315,7 +313,7 @@ export async function DealOfTheDay({ block, ctx }: { block: DealOfTheDayBlock; c
           {save ? <span className="absolute left-4 top-4 rounded-full bg-red-600 px-3 py-1 text-sm font-bold">Save {formatPrice(save)}</span> : null}
         </div>
         <div className="flex flex-col justify-center gap-4 p-6 md:p-10">
-          <p className="text-sm font-bold uppercase tracking-[0.2em] text-red-600">{block.heading}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#ff5a52]">{block.heading}</p>
           <h3 className="font-heading text-3xl leading-tight font-bold md:text-4xl">
             <Link href={`/product/${p.slug}`} className="hover:underline">
               {p.title.split(' – ').slice(0, 2).join(' – ')}

@@ -116,7 +116,7 @@ export function ProductCard({ product: p, vehicle, customer, priority, className
         />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-3 sm:p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-steel-400">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {relName(p.partBrand)}
         </p>
         <h3 className="font-heading text-base leading-tight font-bold text-navy-950 sm:text-lg">

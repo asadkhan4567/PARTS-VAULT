@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className="container-py grid gap-8 py-10 lg:grid-cols-2" aria-busy aria-label="Loading product">
+    <div className="container-py grid min-h-[110vh] gap-8 py-10 lg:grid-cols-2" aria-busy aria-label="Loading product">
       <div className="aspect-square rounded-2xl skeleton" />
       <div className="space-y-4">
         <div className="h-4 w-24 rounded skeleton" />

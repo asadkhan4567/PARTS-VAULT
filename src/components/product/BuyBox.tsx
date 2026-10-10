@@ -88,6 +88,7 @@ export function BuyBox({ item, inStock, whatsappHref, shareUrl }: Props) {
           showSticky ? 'translate-y-0' : 'pointer-events-none translate-y-[200%]',
         )}
         aria-hidden={!showSticky}
+        inert={!showSticky}
       >
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs text-muted-foreground">{item.title.split(' – ')[0]}</p>

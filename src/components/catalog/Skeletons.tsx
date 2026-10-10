@@ -16,9 +16,10 @@ export function GridSkeleton({ count = 8 }: { count?: number }) {
   )
 }
 
+/** Full-height so the footer never flashes into view and then jumps (CLS). */
 export function PageSkeleton() {
   return (
-    <div>
+    <div className="min-h-[110vh]">
       <div className="bg-navy-900">
         <div className="container-py space-y-3 py-10">
           <div className="h-3 w-40 rounded bg-navy-700" />

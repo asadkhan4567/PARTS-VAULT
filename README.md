@@ -6,7 +6,8 @@ Next.js 15, Payload CMS 3 (admin panel + backend) and PostgreSQL.
 The owner runs the whole store from the admin panel at `/admin`: products, prices, stock,
 categories, banners, phone/WhatsApp numbers, pages and orders. No code changes needed.
 
-> Build status: **Phases 0–6** are complete (setup, admin, storefront, checkout & orders, motion & 3D, admin power tools, extras). See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
+> Build status: **all phases (0–7) built.** To go live on partsyaar.com follow
+> [`docs/LAUNCH.md`](docs/LAUNCH.md). See [`docs/BUILD_PLAN.md`](docs/BUILD_PLAN.md)
 > for the full plan and the phases still to come.
 
 ## Run it locally
@@ -38,16 +39,18 @@ Without a seed, the first visit to `/admin` asks you to create the first user �
 | `pnpm test:e2e` | Playwright (starts `pnpm dev` if it isn't running) |
 | `pnpm generate:types` | Regenerate `src/payload-types.ts` after changing collections |
 | `pnpm generate:importmap` | Regenerate the admin import map after adding admin components |
+| `pnpm migrate:create <name>` | Create a database migration after changing collections (commit it) |
+| `pnpm seed [--reset]` | Load demo data (`--reset` wipes demo data first — never on the live site) |
 
-## Deploy (Vercel + Neon + Cloudflare R2)
+## Deploy (Vercel + Neon + Cloudflare R2 + Resend)
 
-1. **Database** — create a Neon project; copy its connection string into `DATABASE_URL`.
-2. **Media** — create an R2 bucket and an API token; set `S3_BUCKET`, `S3_ENDPOINT`
-   (`https://<account-id>.r2.cloudflarestorage.com`), `S3_REGION=auto`, `S3_ACCESS_KEY_ID`,
-   `S3_SECRET_ACCESS_KEY`. Uploads go to R2 automatically once `S3_BUCKET` is set.
-3. **App** — import the GitHub repo in Vercel, add every variable from `.env.example`
-   (`PAYLOAD_SECRET` must be a long random string; `NEXT_PUBLIC_SERVER_URL` = your domain), deploy.
-4. Open `https://<your-domain>/admin` and create the owner account.
+Step-by-step, including the domain, emails, payment gateways and Google: **[`docs/LAUNCH.md`](docs/LAUNCH.md)**.
+In short: create the Neon database, R2 bucket and Resend key, import the repo in Vercel, add the
+variables from `.env.example`, deploy (the build runs `pnpm migrate`), then open `/admin`.
+
+SEO extras built in: `/sitemap.xml`, `/robots.txt`, `/feeds/products.xml` (Google Merchant /
+Meta catalogue), JSON-LD (Organization, AutoPartsStore, Product, Offer, Review, BreadcrumbList,
+FAQPage, BlogPosting), hreflang for Urdu (`?lang=ur`), and GA4 / Meta Pixel from the admin.
 
 ## For the owner
 

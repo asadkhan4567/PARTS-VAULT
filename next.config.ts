@@ -6,13 +6,28 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
+const securityHeaders = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(self)' },
+]
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  // Resolve <title>/<meta> before streaming for every client (not only known crawlers).
+  htmlLimitedBots: /.*/,
   images: {
+    formats: ['image/avif', 'image/webp'],
     localPatterns: [
       {
         pathname: '/api/media/file/**',
       },
     ],
+  },
+  async headers() {
+    return [{ source: '/:path*', headers: securityHeaders }]
   },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {

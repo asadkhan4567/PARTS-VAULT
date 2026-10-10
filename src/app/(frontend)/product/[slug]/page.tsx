@@ -138,7 +138,7 @@ export default async function ProductPage({ params }: Props) {
         />
         <div className="space-y-5">
           <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-wide text-steel-400">{relName(p.partBrand)}</p>
+            <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">{relName(p.partBrand)}</p>
             <h1 className="text-3xl leading-tight md:text-4xl">{part}</h1>
             {vehicleText ? <p className="text-muted-foreground">{vehicleText}</p> : null}
             <Stars value={p.ratingAvg ?? 0} count={p.ratingCount ?? 0} />

@@ -118,7 +118,7 @@ export function SortSelect({ includeRelevance = false }: { includeRelevance?: bo
   return (
     <label className={cn('flex items-center gap-2 text-sm', pending && 'opacity-60')}>
       <span className="hidden text-muted-foreground sm:inline">Sort</span>
-      <select value={params.get('sort') ?? options[0].value} onChange={(e) => update({ sort: e.target.value })} className="h-10 rounded-lg border bg-white px-2 font-semibold">
+      <select aria-label="Sort products" value={params.get('sort') ?? options[0].value} onChange={(e) => update({ sort: e.target.value })} className="h-10 rounded-lg border bg-white px-2 font-semibold">
         {options.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}
